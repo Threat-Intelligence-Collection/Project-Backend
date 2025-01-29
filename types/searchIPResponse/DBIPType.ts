@@ -4,4 +4,4 @@ interface IPInfo {
   info: { [key: string]: string };
 }
 
-export { IPInfo }
+export { IPInfo };
