@@ -3,7 +3,9 @@ import { fetchCriminalReport } from "@src/services/searchIP/CriminalIP";
 import { fetchDBIP } from "@src/services/searchIP/DBIP";
 import { fetchVirusTotalData } from "@src/services/searchIP/Virustotal";
 import { ApiResponse, searchIPresponse, errResponse } from "../../types/ApiResponse/ApiResponse";
-async function searchIP({ params }: { params: { ip: string } }): Promise <ApiResponse | searchIPresponse | errResponse>{
+import { fetchCriminalDomainReport } from "@src/services/searchDomain/CriminalIP";
+import { fetchVirusTotalDomainData } from "@src/services/searchDomain/Virustotal";
+async function searchIP({ params }: { params: { ip: string } }): Promise <ApiResponse | searchIPresponse>{
     try {
         const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
         if (!params.ip) {
@@ -28,13 +30,23 @@ async function searchIP({ params }: { params: { ip: string } }): Promise <ApiRes
         } else if (typeof error === "string") {
             errorMessage = error;
         }
-        return { success: false, error: errorMessage };
+        return { success: false, message: errorMessage };
     }
 }
 
-async function searchDomain({ params }: { params: { domainName: string } }){
+async function searchDomain({ params }: { params: { domainName: string } }): Promise <ApiResponse | searchIPresponse>{
     try {
-        
+        const domainRegex = /^(?!-)([A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,63}$/;
+        if(!params.domainName) {
+            return { success: false, message: "Domain name must be provided!" };
+        }
+        if (!domainRegex.test(params.domainName)) {
+            return { success: false, message: "Invalid Domain format!" };
+        }
+        const CriminalResult = await fetchCriminalDomainReport(params.domainName);
+        const Virusresult = await fetchVirusTotalDomainData(params.domainName);
+
+        return { success: true, data1: undefined, data2: Virusresult, data3: undefined, data4: CriminalResult};
     } catch (error: unknown) {
         console.error("Error:", error);
         let errorMessage = "An unknown error occurred";
@@ -43,7 +55,7 @@ async function searchDomain({ params }: { params: { domainName: string } }){
         } else if (typeof error === "string") {
             errorMessage = error;
         }
-        return { success: false, error: errorMessage };
+        return { success: false, message: errorMessage };
     }
 } 
-export { searchIP }
+export { searchIP, searchDomain }

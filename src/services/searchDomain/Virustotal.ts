@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import "dotenv/config";
 import { VirusTotalDomain, VirusTotalDomainResponseType } from "../../../types/searchDomainResponse/VirusTotalDomainType";
+import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
 
 const API_KEY = process.env.VIRUS_TOTAL_API_KEY || "";
 
@@ -8,7 +9,7 @@ const headers = {
   "x-apikey": API_KEY,
 };
 
-async function fetchVirusTotalDomainData(domainName: string) {
+async function fetchVirusTotalDomainData(domainName: string) : Promise<VirusTotalDomain | ApiResponse>{
   const URL = `https://www.virustotal.com/api/v3/domains/${domainName}`;
   try {
     if (API_KEY == "") {
@@ -28,7 +29,7 @@ async function fetchVirusTotalDomainData(domainName: string) {
     return filteredData;
   } catch (error) {
     console.error("Error fetching VirusTotal data:", error);
+    return {success : false, message : "Error fetching VirusTotal data"};
   }
 }
-fetchVirusTotalDomainData("sodiumlaurethsulfatedesyroyer.com")
 export { fetchVirusTotalDomainData };

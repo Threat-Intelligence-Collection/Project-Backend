@@ -38,8 +38,7 @@ async function fetchVirusTotalData(ipAddress: string): Promise<VirusTotalIPrepor
       Country: VirusTotalresponse.data.attributes.country,
       Analysis_stats: VirusTotalresponse.data.attributes.last_analysis_stats,
     };
-
-    console.log(filteredData);
+    
     return filteredData;
   } catch (error) {
     console.error("Error fetching VirusTotal data:", error);
