@@ -33,7 +33,6 @@ async function fetchCriminalDomainReport(query: string): Promise<CriminalDomain 
     }
 
     const criminalResponse = await response.json() as CriminalDomainResponseType;
-    console.log(criminalResponse);
     if (!criminalResponse?.data?.reports) {
       return {
         success: false,

@@ -38,7 +38,6 @@ async function fetchDBIP(
 
       return result;
     } else {
-      console.log("Info not found.");
       return { success: false, message: "Info not found!" };
     }
   } catch (error) {
