@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { VirusTotalResponse } from "../../types/VirusTotalType";
+import { VirusTotalResponse } from "../../../types/VirusTotalType";
 
 const API_KEY = process.env.VIRUS_TOTAL_API_KEY || "";
 

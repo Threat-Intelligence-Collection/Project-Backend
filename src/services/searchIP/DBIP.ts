@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import * as cheerio from "cheerio";
-import { IPInfo } from "../../types/DBIPType"
+import { IPInfo } from "../../../types/DBIPType"
 async function fetchDBIP(ipAddress: string): Promise<IPInfo | { success: false; message: string }> {
   const url = `https://db-ip.com/${ipAddress}`;
   try {

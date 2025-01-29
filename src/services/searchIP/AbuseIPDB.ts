@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import "dotenv/config";
-import type { AbuseIPDBResponseType } from "../../types/AbuseIPDBType";
+import type { AbuseIPDBResponseType } from "../../../types/AbuseIPDBType";
 
 const API_KEY = process.env.ABUSE_IPDB_API_KEY || "";
 
