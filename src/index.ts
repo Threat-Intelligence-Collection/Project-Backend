@@ -2,23 +2,20 @@ import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
 import { connectToDatabase } from "@db/util";
+import { appRoutes } from "@routes/user.routes";
 
 const app = new Elysia().use(cors());
 app.use(
   swagger({
     documentation: {
       tags: [
-        { name: "App", description: "General endpoints" },
-        { name: "Auth", description: "Authentication endpoints" },
+        { name: "app", description: "App endpoints" },
+        { name: "Search", description: "Search endpoints catagory" },
       ],
     },
   })
-);
-app.get("/hello", () => "Hello Elysia", {
-  detail: {
-    tags: ["App"],
-  },
-});
+)
+.use(appRoutes)
 
 async function initializeServer() {
   try {
