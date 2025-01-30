@@ -33,7 +33,8 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       NODE_ENV: development
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     restart: always
     networks:
       - project-network
