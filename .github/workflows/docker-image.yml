@@ -32,7 +32,7 @@ jobs:
         echo "DB_HOST=postgres" >> .env
         echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
         echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
-        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_APP_PASSWORD }}" >> .env
+        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
         echo "POSTGRES_APP_USER=${{ secrets.POSTGRES_APP_USER }}" >> .env
         echo "POSTGRES_APP_PASSWORD=${{ secrets.POSTGRES_APP_PASSWORD }}" >> .env
         
