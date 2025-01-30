@@ -50,12 +50,34 @@ jobs:
       run: |
         docker network create project-network || true
         docker compose up -d
-        docker compose ps
-        sleep 45
-        docker compose logs
+        sleep 60  # Wait longer for services to start
+        
+    - name: Wait for PostgreSQL to be ready
+      run: |
+        for i in {1..30}; do
+          if docker exec $(docker compose ps -q postgres) pg_isready -U ${{ secrets.POSTGRES_USER }}; then
+            echo "Database is ready"
+            exit 0
+          fi
+          echo "Waiting for database..."
+          sleep 2
+        done
+        echo "Database did not start in time" && exit 1
+
+    - name: Initialize Database
+      run: |
+        docker exec -i $(docker compose ps -q postgres) psql -U ${{ secrets.POSTGRES_USER }} -c "CREATE DATABASE ${{ secrets.POSTGRES_DB }};"
+
+    - name: Check Docker Compose Logs
+      run: docker compose logs
+
+    - name: Verify Running Containers
+      run: |
         if ! docker compose ps | grep -q "running"; then
           echo "Containers are not running properly"
           docker compose logs
           exit 1
         fi
-        docker compose down
+
+    - name: Shutdown Services
+      run: docker compose down
