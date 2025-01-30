@@ -1,10 +1,12 @@
-# Use Bun as the base image
-FROM oven/bun:latest
+FROM oven/bun:1
 
 WORKDIR /app
 
-COPY . .
+COPY package.json bun.lockb ./
+COPY src ./src
 
 RUN bun install
+
+EXPOSE 3000
 
 CMD ["bun", "run", "dev"]

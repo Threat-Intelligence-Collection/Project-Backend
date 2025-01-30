@@ -14,6 +14,25 @@ services:
     networks:
       - project-network
 
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: Project-API
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      NODE_ENV: development
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+      - project-network
+
 volumes:
   project-volumes:
     name: project-volumes
