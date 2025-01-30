@@ -2,9 +2,9 @@ name: Docker Compose CI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["Docker_Compose"]
   pull_request:
-    branches: ["main"]
+    branches: ["Docker_Compose"]
 
 jobs:
   build:
