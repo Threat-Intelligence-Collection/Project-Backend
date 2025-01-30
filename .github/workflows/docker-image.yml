@@ -32,10 +32,9 @@ jobs:
         echo "DB_HOST=postgres" >> .env
         echo "POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}" >> .env
         echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env
+        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_APP_PASSWORD }}" >> .env
         echo "POSTGRES_APP_USER=${{ secrets.POSTGRES_APP_USER }}" >> .env
         echo "POSTGRES_APP_PASSWORD=${{ secrets.POSTGRES_APP_PASSWORD }}" >> .env
-        
-        
         
     - name: Build and push API image
       uses: docker/build-push-action@v5
@@ -52,6 +51,11 @@ jobs:
         docker network create project-network || true
         docker compose up -d
         docker compose ps
-        sleep 10
+        sleep 30  # Increased wait time to ensure database is ready
         docker compose logs
+        if ! docker compose ps | grep -q "running"; then
+          echo "Containers are not running properly"
+          docker compose logs
+          exit 1
+        fi
         docker compose down
