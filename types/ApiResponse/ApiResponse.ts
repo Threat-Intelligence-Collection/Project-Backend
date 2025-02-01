@@ -11,10 +11,10 @@ interface ApiResponse {
 
 interface searchIPresponse {
     success : boolean,
-    data1: AbuseIPObject | ApiResponse | undefined, 
-    data2: VirusTotalIPreport | ApiResponse | VirusTotalDomain, 
-    data3: IPInfo | ApiResponse | undefined, 
-    data4: CriminalObject | ApiResponse | CriminalDomain,
+    abuseData: AbuseIPObject | ApiResponse | undefined, 
+    virusTotalData: VirusTotalIPreport | ApiResponse | VirusTotalDomain, 
+    IPDBData: IPInfo | ApiResponse | undefined, 
+    CriminalData: CriminalObject | ApiResponse | CriminalDomain,
 }
 
 interface errResponse {

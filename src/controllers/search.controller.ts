@@ -20,7 +20,7 @@ async function searchIP({ params }: { params: { ip: string } }): Promise <ApiRes
         const Criminalresult = await fetchCriminalReport(params.ip);
         // Now search only on AbuseIPDB, VirusTotal, DBIP, CriminalIP and doesn't provide to database
         // Waiting for database schema and implementation
-        return { success: true, data1: Abuseresult, data2: Virusresult, data3: DBIPresult, data4: Criminalresult};
+        return { success: true, abuseData: Abuseresult, virusTotalData: Virusresult, IPDBData: DBIPresult, CriminalData: Criminalresult};
 
     } catch (error: unknown) {
         console.error("Error:", error);
@@ -46,7 +46,7 @@ async function searchDomain({ params }: { params: { domainName: string } }): Pro
         const CriminalResult = await fetchCriminalDomainReport(params.domainName);
         const Virusresult = await fetchVirusTotalDomainData(params.domainName);
 
-        return { success: true, data1: undefined, data2: Virusresult, data3: undefined, data4: CriminalResult};
+        return { success: true, abuseData: undefined, virusTotalData: Virusresult, IPDBData: undefined, CriminalData: CriminalResult};
     } catch (error: unknown) {
         console.error("Error:", error);
         let errorMessage = "An unknown error occurred";
