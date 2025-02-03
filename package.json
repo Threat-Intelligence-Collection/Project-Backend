@@ -3,7 +3,10 @@
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "bun run --watch src/index.ts"
+    "dev": "bun run --watch src/index.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:fresh": "ts-node ./db/client.ts && drizzle-kit push"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",
@@ -13,7 +16,8 @@
     "drizzle-orm": "^0.39.0",
     "elysia": "latest",
     "node-fetch": "^3.3.2",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "postgres": "^3.4.5"
   },
   "devDependencies": {
     "@types/pg": "^8.11.11",
