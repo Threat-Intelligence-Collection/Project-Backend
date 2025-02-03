@@ -28,7 +28,7 @@ services:
       - "3000:3000"
     volumes:
       - .:/app
-      - /app/node_modules
+      - api-node-modules:/app/node_modules
     environment:
       DATABASE_URL: postgresql://${POSTGRES_APP_USER}:${POSTGRES_APP_PASSWORD}@postgres:5432/${POSTGRES_DB}
       NODE_ENV: development
