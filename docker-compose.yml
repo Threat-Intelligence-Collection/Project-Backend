@@ -42,6 +42,8 @@ services:
 volumes:
   project-volumes:
     name: project-volumes
+  api-node-modules:
+    name: project-node-modules
 
 networks:
   project-network:
