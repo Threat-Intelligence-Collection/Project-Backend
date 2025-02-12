@@ -45,7 +45,6 @@ async function searchDomain({ params }: { params: { domainName: string } }): Pro
         }
         const CriminalResult = await fetchCriminalDomainReport(params.domainName);
         const Virusresult = await fetchVirusTotalDomainData(params.domainName);
-        console.log({ success: true, abuseData: undefined, virusTotalData: Virusresult, IPDBData: undefined, CriminalData: CriminalResult})
         return { success: true, abuseData: undefined, virusTotalData: Virusresult, IPDBData: undefined, CriminalData: CriminalResult};
     } catch (error: unknown) {
         console.error("Error:", error);
@@ -58,5 +57,4 @@ async function searchDomain({ params }: { params: { domainName: string } }): Pro
         return { success: false, message: errorMessage };
     }
 } 
-searchDomain({ params: { domainName: "statsrvv.com" } })
 export { searchIP, searchDomain }
