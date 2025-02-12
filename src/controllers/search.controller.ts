@@ -2,9 +2,10 @@ import { fetchAbuseReport } from "@src/services/searchIP/AbuseIPDB";
 import { fetchCriminalReport } from "@src/services/searchIP/CriminalIP";
 import { fetchDBIP } from "@src/services/searchIP/DBIP";
 import { fetchVirusTotalData } from "@src/services/searchIP/Virustotal";
-import { ApiResponse, searchIPresponse, errResponse } from "../../types/ApiResponse/ApiResponse";
+import { ApiResponse, searchIPresponse, searchDomainResponse } from "../../types/ApiResponse/ApiResponse";
 import { fetchCriminalDomainReport } from "@src/services/searchDomain/CriminalIP";
 import { fetchVirusTotalDomainData } from "@src/services/searchDomain/Virustotal";
+import { fetchBlockList } from "@src/services/searchIP/blockList";
 async function searchIP({ params }: { params: { ip: string } }): Promise <ApiResponse | searchIPresponse>{
     try {
         const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
@@ -18,9 +19,8 @@ async function searchIP({ params }: { params: { ip: string } }): Promise <ApiRes
         const Virusresult = await fetchVirusTotalData(params.ip);
         const DBIPresult = await fetchDBIP(params.ip);
         const Criminalresult = await fetchCriminalReport(params.ip);
-        // Now search only on AbuseIPDB, VirusTotal, DBIP, CriminalIP and doesn't provide to database
-        // Waiting for database schema and implementation
-        return { success: true, abuseData: Abuseresult, virusTotalData: Virusresult, IPDBData: DBIPresult, CriminalData: Criminalresult};
+        const BlockListresult = await fetchBlockList(params.ip);
+        return { success: true, abuseData: Abuseresult, virusTotalData: Virusresult, IPDBData: DBIPresult, CriminalData: Criminalresult, BlockListData: BlockListresult};
 
     } catch (error: unknown) {
         console.error("Error:", error);
@@ -34,7 +34,7 @@ async function searchIP({ params }: { params: { ip: string } }): Promise <ApiRes
     }
 }
 
-async function searchDomain({ params }: { params: { domainName: string } }): Promise <ApiResponse | searchIPresponse>{
+async function searchDomain({ params }: { params: { domainName: string } }): Promise <ApiResponse | searchDomainResponse>{
     try {
         const domainRegex = /^(?!-)([A-Za-z0-9-]{1,63}\.)+[A-Za-z]{2,63}$/;
         if(!params.domainName) {
@@ -45,7 +45,7 @@ async function searchDomain({ params }: { params: { domainName: string } }): Pro
         }
         const CriminalResult = await fetchCriminalDomainReport(params.domainName);
         const Virusresult = await fetchVirusTotalDomainData(params.domainName);
-
+        console.log({ success: true, abuseData: undefined, virusTotalData: Virusresult, IPDBData: undefined, CriminalData: CriminalResult})
         return { success: true, abuseData: undefined, virusTotalData: Virusresult, IPDBData: undefined, CriminalData: CriminalResult};
     } catch (error: unknown) {
         console.error("Error:", error);
@@ -58,4 +58,5 @@ async function searchDomain({ params }: { params: { domainName: string } }): Pro
         return { success: false, message: errorMessage };
     }
 } 
+searchDomain({ params: { domainName: "statsrvv.com" } })
 export { searchIP, searchDomain }
