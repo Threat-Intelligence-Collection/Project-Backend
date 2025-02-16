@@ -16,10 +16,6 @@ interface reportData {
   url: string;
 }
 
-interface CriminalDomain {
-    domainName : string,
-    score: string[]
-}
 
 interface CriminalDomainResponseType {
   status: number;
@@ -30,4 +26,4 @@ interface CriminalDomainResponseType {
   };
 }
 
-export { CriminalDomainResponseType, CriminalDomain }
+export { CriminalDomainResponseType }

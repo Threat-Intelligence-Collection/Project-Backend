@@ -33,8 +33,6 @@ async function fetchIsMalicious(
     }
 
     const result = (await response.json()) as IsMaliciousData;
-    console.log(result
-    )
     if (result) {
       return result;
     } else {
