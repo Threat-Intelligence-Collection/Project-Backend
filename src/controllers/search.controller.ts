@@ -8,6 +8,7 @@ import { fetchVirusTotalDomainData } from "@src/services/searchDomain/Virustotal
 import { fetchBlockList } from "@src/services/searchIP/blockList";
 import { fetchUrlVoid } from "@src/services/searchDomain/UrlVoid";
 import { fetchIsMalicious } from "@src/services/searchDomain/IsMalicious";
+import { fetchNeutrino } from "@src/services/searchDomain/Neutrino";
 async function searchIP({ params }: { params: { ip: string } }): Promise <ApiResponse | searchIPresponse>{
     try {
         const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
@@ -49,7 +50,8 @@ async function searchDomain({ params }: { params: { domainName: string } }): Pro
         const Virusresult = await fetchVirusTotalDomainData(params.domainName);
         const UrlVoidresult = await fetchUrlVoid(params.domainName);
         const IsMaliciousresult = await fetchIsMalicious(params.domainName);
-        return { success: true, UrlVoidData: UrlVoidresult, virusTotalData: Virusresult, IsMaliCiousData: IsMaliciousresult, CriminalData: CriminalResult};
+        const NeutrinoResult = await fetchNeutrino(params.domainName);
+        return { success: true, UrlVoidData: UrlVoidresult, virusTotalData: Virusresult, IsMaliCiousData: IsMaliciousresult, CriminalData: CriminalResult, NeutrinoData: NeutrinoResult};
     } catch (error: unknown) {
         console.error("Error:", error);
         let errorMessage = "An unknown error occurred";

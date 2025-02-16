@@ -7,6 +7,7 @@ import { VirusTotalDomain } from "types/searchDomainResponse/VirusTotalDomainTyp
 import { BlockList } from "types/searchIPResponse/blockListType";
 import { URLVoidData } from "types/searchDomainResponse/UrlVoidDomainType";
 import { IsMaliciousData } from "types/searchDomainResponse/IsMaliciousType";
+import { NeutrinoData } from "types/searchDomainResponse/NeutrinoType";
 interface ApiResponse {
     success: boolean;
     message?: string;
@@ -28,6 +29,7 @@ interface searchDomainResponse {
     IsMaliCiousData: IsMaliciousData | ApiResponse, 
     CriminalData: CriminalDomain | ApiResponse,
     BlockListData: BlockList | ApiResponse
+    NeutrinoData: NeutrinoData | ApiResponse
 }
 
 

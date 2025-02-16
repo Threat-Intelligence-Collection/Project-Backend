@@ -120,11 +120,4 @@ interface IsMaliciousData {
   similar_domains: SimilarDomains;
 }
 
-interface SecurityCheck {
-  name: string;
-  result: string;
-  details?: string;
-  timestamp: string;
-}
-
 export { IsMaliciousData };
