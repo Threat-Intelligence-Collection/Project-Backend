@@ -1,5 +1,5 @@
 import { CriminalObject } from "types/searchIPResponse/CriminalIPType";
-import { CriminalDomain } from "types/searchDomainResponse/CriminalDomainType";
+import { CriminalDomainResponseType } from "types/searchDomainResponse/CriminalDomainType";
 import { AbuseIPObject } from "types/searchIPResponse/AbuseIPDBType";
 import { IPInfo } from "types/searchIPResponse/DBIPType";
 import { VirusTotalIPreport } from "types/searchIPResponse/VirusTotalType";
@@ -27,7 +27,7 @@ interface searchDomainResponse {
     UrlVoidData: URLVoidData | ApiResponse, 
     virusTotalData:  VirusTotalDomain| ApiResponse, 
     IsMaliCiousData: IsMaliciousData | ApiResponse, 
-    CriminalData: CriminalDomain | ApiResponse,
+    CriminalData: CriminalDomainResponseType | ApiResponse,
     BlockListData: BlockList | ApiResponse
     NeutrinoData: NeutrinoData | ApiResponse
 }
