@@ -3,7 +3,7 @@ import "dotenv/config";
 import {
   CriminalResponseType,
   CriminalObject,
-} from "../../../types/searchIPResponse/CriminalIP";
+} from "../../../types/searchIPResponse/CriminalIPType";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
 
 const API_KEY = process.env.CRIMINAL_IP_API_KEY || "";
