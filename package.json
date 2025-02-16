@@ -6,7 +6,7 @@
     "dev": "bun run --watch src/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:fresh": "ts-node ./db/client.ts && drizzle-kit push"
+    "db:fresh": "tsx ./src/db/client.ts && drizzle-kit push"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",
