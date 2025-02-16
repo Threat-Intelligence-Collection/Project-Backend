@@ -6,6 +6,8 @@ import { ApiResponse, searchIPresponse, searchDomainResponse } from "../../types
 import { fetchCriminalDomainReport } from "@src/services/searchDomain/CriminalIP";
 import { fetchVirusTotalDomainData } from "@src/services/searchDomain/Virustotal";
 import { fetchBlockList } from "@src/services/searchIP/blockList";
+import { fetchUrlVoid } from "@src/services/searchDomain/UrlVoid";
+import { fetchIsMalicious } from "@src/services/searchDomain/IsMalicious";
 async function searchIP({ params }: { params: { ip: string } }): Promise <ApiResponse | searchIPresponse>{
     try {
         const ipv4Regex = /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
@@ -20,7 +22,7 @@ async function searchIP({ params }: { params: { ip: string } }): Promise <ApiRes
         const DBIPresult = await fetchDBIP(params.ip);
         const Criminalresult = await fetchCriminalReport(params.ip);
         const BlockListresult = await fetchBlockList(params.ip);
-        return { success: true, abuseData: Abuseresult, virusTotalData: Virusresult, IPDBData: DBIPresult, CriminalData: Criminalresult, BlockListData: BlockListresult};
+        return { success: true, abuseData: Abuseresult, virusTotalData: Virusresult, DBIPData: DBIPresult, CriminalData: Criminalresult, BlockListData: BlockListresult};
 
     } catch (error: unknown) {
         console.error("Error:", error);
@@ -45,7 +47,9 @@ async function searchDomain({ params }: { params: { domainName: string } }): Pro
         }
         const CriminalResult = await fetchCriminalDomainReport(params.domainName);
         const Virusresult = await fetchVirusTotalDomainData(params.domainName);
-        return { success: true, abuseData: undefined, virusTotalData: Virusresult, IPDBData: undefined, CriminalData: CriminalResult};
+        const UrlVoidresult = await fetchUrlVoid(params.domainName);
+        const IsMaliciousresult = await fetchIsMalicious(params.domainName);
+        return { success: true, UrlVoidData: UrlVoidresult, virusTotalData: Virusresult, IsMaliCiousData: IsMaliciousresult, CriminalData: CriminalResult};
     } catch (error: unknown) {
         console.error("Error:", error);
         let errorMessage = "An unknown error occurred";

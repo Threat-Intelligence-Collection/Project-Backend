@@ -5,6 +5,8 @@ import { IPInfo } from "types/searchIPResponse/DBIPType";
 import { VirusTotalIPreport } from "types/searchIPResponse/VirusTotalType";
 import { VirusTotalDomain } from "types/searchDomainResponse/VirusTotalDomainType";
 import { BlockList } from "types/searchIPResponse/blockListType";
+import { URLVoidData } from "types/searchDomainResponse/UrlVoidDomainType";
+import { IsMaliciousData } from "types/searchDomainResponse/IsMaliciousType";
 interface ApiResponse {
     success: boolean;
     message?: string;
@@ -14,16 +16,16 @@ interface searchIPresponse {
     success : boolean,
     abuseData: AbuseIPObject | ApiResponse, 
     virusTotalData: VirusTotalIPreport | ApiResponse, 
-    IPDBData: IPInfo | ApiResponse, 
+    DBIPData: IPInfo | ApiResponse, 
     CriminalData: CriminalObject | ApiResponse,
     BlockListData: BlockList | ApiResponse
 }
 
 interface searchDomainResponse {
     success : boolean,
-    abuseData: AbuseIPObject | ApiResponse, 
+    UrlVoidData: URLVoidData | ApiResponse, 
     virusTotalData:  VirusTotalDomain| ApiResponse, 
-    IPDBData: IPInfo | ApiResponse, 
+    IsMaliCiousData: IsMaliciousData | ApiResponse, 
     CriminalData: CriminalDomain | ApiResponse,
     BlockListData: BlockList | ApiResponse
 }
