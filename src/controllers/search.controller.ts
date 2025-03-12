@@ -259,7 +259,7 @@ async function searchDomain({
     const IsMaliciousresult = await fetchIsMalicious(params.domainName);
     const NeutrinoResult = await fetchNeutrino(params.domainName);
 
-    const riskScore = calculateIPRisk({
+    const riskScore = calculateDomainRisk({
       UrlVoidData: UrlVoidresult,
       virusTotalData: Virusresult,
       IsMaliCiousData: IsMaliciousresult,
