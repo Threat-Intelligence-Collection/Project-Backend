@@ -1,7 +1,3 @@
-import { fetchAbuseReport } from "@src/services/searchIP/AbuseIPDB";
-import { fetchCriminalReport } from "@src/services/searchIP/CriminalIP";
-import { fetchDBIP } from "@src/services/searchIP/DBIP";
-import { fetchVirusTotalData } from "@src/services/searchIP/Virustotal";
 import {
   ApiResponse,
   searchIPresponse,
@@ -9,12 +5,17 @@ import {
 } from "../../types/ApiResponse/ApiResponse";
 import { fetchCriminalDomainReport } from "@src/services/searchDomain/CriminalIP";
 import { fetchVirusTotalDomainData } from "@src/services/searchDomain/Virustotal";
-import { fetchBlockList } from "@src/services/searchIP/blockList";
 import { fetchUrlVoid } from "@src/services/searchDomain/UrlVoid";
 import { fetchIsMalicious } from "@src/services/searchDomain/IsMalicious";
 import { fetchNeutrino } from "@src/services/searchDomain/Neutrino";
 import { reportData } from "types/searchDomainResponse/CriminalDomainType";
 import "dotenv/config";
+import { fetchIPReport } from "@src/services/searchIP/fetchIP";
+import { AbuseIPObject } from "../../types/searchIPResponse/AbuseIPDBType";
+import { VirusTotalIPreport } from "../../types/searchIPResponse/VirusTotalType";
+import { IPInfo } from "../../types/searchIPResponse/DBIPType";
+import { CriminalObject } from "../../types/searchIPResponse/CriminalIPType";
+import { BlockList } from "../../types/searchIPResponse/blockListType";
 
 function calculateIPRisk(data: any): number {
   let score = 0;
@@ -111,20 +112,23 @@ async function searchIP({
     if (!ipv4Regex.test(params.ip)) {
       return { success: false, status: 400, message: "Invalid IP format!" };
     }
-    const Abuseresult = await fetchAbuseReport(
+    const Abuseresult = await fetchIPReport<AbuseIPObject>(
       params.ip,
+      "AbuseIPDB",
       process.env.ABUSE_IPDB_API_KEY || ""
     );
-    const Virusresult = await fetchVirusTotalData(
+    const Virusresult = await fetchIPReport<VirusTotalIPreport>(
       params.ip,
+      "VirusTotal",
       process.env.VIRUS_TOTAL_API_KEY || ""
     );
-    const DBIPresult = await fetchDBIP(params.ip);
-    const Criminalresult = await fetchCriminalReport(
+    const DBIPresult = await fetchIPReport<IPInfo>(params.ip, "DBIP");
+    const Criminalresult = await fetchIPReport<CriminalObject>(
       params.ip,
+      "CriminalIP",
       process.env.CRIMINAL_IP_API_KEY || ""
     );
-    const BlockListresult = await fetchBlockList(params.ip);
+    const BlockListresult = await fetchIPReport<BlockList>(params.ip, "BlockList");
 
     const riskScore = calculateIPRisk({
       abuseData: Abuseresult,
