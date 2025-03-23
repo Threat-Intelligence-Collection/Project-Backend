@@ -28,6 +28,7 @@ async function fetchBlockList(ipAddress: string) : Promise<BlockList | ApiRespon
     console.error("Error fetching IP info:", error);
     return {
       success: false,
+      status: 503,
       message: "Fetch data failed from Blocklist.de!",
       ipAddress,
     };

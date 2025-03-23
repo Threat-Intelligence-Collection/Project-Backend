@@ -10,6 +10,7 @@ import { IsMaliciousData } from "types/searchDomainResponse/IsMaliciousType";
 import { NeutrinoData } from "types/searchDomainResponse/NeutrinoType";
 interface ApiResponse {
   success: boolean;
+  status: number;
   message?: string;
 }
 

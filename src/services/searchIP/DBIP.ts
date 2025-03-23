@@ -38,11 +38,11 @@ async function fetchDBIP(
 
       return result;
     } else {
-      return { success: false, message: "Info not found!" };
+      return { success: false, status:404, message: "Info not found!" };
     }
   } catch (error) {
     console.error("Error fetching IP info:", error);
-    return { success: false, message: "Fetch data fail from DBIP!" };
+    return { success: false, status: 503, message: "Fetch data fail from DBIP!" };
   }
 }
 

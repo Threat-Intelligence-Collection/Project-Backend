@@ -66,12 +66,17 @@ async function fetchUrlVoid(
     } else {
       return {
         success: false,
+        status: 404,
         message: "Info not found",
       };
     }
   } catch (error) {
     console.error("Error fetching URLVoid data:", error);
-    return { success: false, message: "Failed to fetch data from URLVoid!" };
+    return {
+      success: false,
+      status: 503,
+      message: "Failed to fetch data from URLVoid!",
+    };
   }
 }
 export { fetchUrlVoid };

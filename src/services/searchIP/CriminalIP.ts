@@ -12,7 +12,7 @@ async function fetchCriminalReport(ipAddress: string) : Promise <CriminalObject 
   const url = `https://api.criminalip.io/v1/asset/ip/report?ip=${ipAddress}`;
   try {
     if (API_KEY == "") {
-      return { success: false, message: "Abuse IPDB API Key not found!!" };
+      return { success: false, status: 404, message: "Abuse IPDB API Key not found!!"};
     }
     const response = await fetch(url, {
       method: "GET",
@@ -38,7 +38,7 @@ async function fetchCriminalReport(ipAddress: string) : Promise <CriminalObject 
     return result;
   } catch (error) {
     console.error("Error:", error);
-    return { success: false, message: "Fetch data fail from Abuse!!" };
+    return { success: false, status: 503, message: "Fetch data fail from Abuse!!" };
   }
 }
 

@@ -12,12 +12,17 @@ const headers = {
   "x-apikey": API_KEY,
 };
 
-async function fetchVirusTotalData(ipAddress: string): Promise<VirusTotalIPreport | ApiResponse> {
+async function fetchVirusTotalData(
+  ipAddress: string
+): Promise<VirusTotalIPreport | ApiResponse> {
   const URL = `https://www.virustotal.com/api/v3/ip_addresses/${ipAddress}`;
   try {
-
     if (API_KEY == "") {
-      return { success: false, message: "Virus total API Key not found!!" };
+      return {
+        success: false,
+        status: 404,
+        message: "Virus total API Key not found!!",
+      };
     }
 
     const response = await fetch(URL, { headers });
@@ -39,9 +44,9 @@ async function fetchVirusTotalData(ipAddress: string): Promise<VirusTotalIPrepor
     };
 
     return filteredData;
-  } catch (error:any) {
+  } catch (error: any) {
     console.error("Error fetching VirusTotal data:", error);
-    return { success: false , message: error.message}
+    return { success: false, status: 503, message: error.message };
   }
 }
 

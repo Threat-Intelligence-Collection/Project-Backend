@@ -39,6 +39,7 @@ async function fetchNeutrino(domainName: string): Promise<NeutrinoData | ApiResp
     }else{
       return {
         success: false,
+        status: 503,
         message: "Data fetched failed",
       };
     }
@@ -46,6 +47,7 @@ async function fetchNeutrino(domainName: string): Promise<NeutrinoData | ApiResp
     console.error("Error fetching domain lookup data:", error);
     return {
       success: false,
+      status: 503,
       message: error instanceof Error ? error.message : "Unknown error",
     };
   }

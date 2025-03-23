@@ -38,6 +38,7 @@ async function fetchIsMalicious(
     } else {
       return {
         success: false,
+        status: 503,
         message: "Data fetched failures",
       };
     }
@@ -45,6 +46,7 @@ async function fetchIsMalicious(
     console.error("Error fetching isMalicious data:", error);
     return {
       success: false,
+      status: 503,
       message:
         error instanceof Error
           ? error.message

@@ -12,6 +12,7 @@ async function fetchCriminalDomainReport(
     if (API_KEY === "") {
       return {
         success: false,
+        status: 404,
         message: "Criminal IP API Key not found!",
       };
     }
@@ -27,6 +28,7 @@ async function fetchCriminalDomainReport(
     if (!response.ok) {
       return {
         success: false,
+        status: 503,
         message: `API Error: ${response.status} - ${response.statusText}`,
       };
     }
@@ -36,6 +38,7 @@ async function fetchCriminalDomainReport(
     if (!criminalResponse?.data?.reports) {
       return {
         success: false,
+        status: 503,
         message: "Invalid response structure from Criminal IP API",
       };
     }
@@ -45,6 +48,7 @@ async function fetchCriminalDomainReport(
       error instanceof Error ? error.message : "Unknown error occurred";
     return {
       success: false,
+      status: 503,
       message: `Error fetching Criminal IP data: ${errorMessage}`,
     };
   }
