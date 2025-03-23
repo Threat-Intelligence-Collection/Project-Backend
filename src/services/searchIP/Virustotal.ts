@@ -5,6 +5,7 @@ import {
   VirusTotalIPreport,
 } from "../../../types/searchIPResponse/VirusTotalType";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
+import { buildUrl } from "./simplifyFunction";
 
 const API_KEY = process.env.VIRUS_TOTAL_API_KEY || "";
 
@@ -15,7 +16,7 @@ const headers = {
 async function fetchVirusTotalData(
   ipAddress: string
 ): Promise<VirusTotalIPreport | ApiResponse> {
-  const URL = `https://www.virustotal.com/api/v3/ip_addresses/${ipAddress}`;
+  const URL = buildUrl(ipAddress, "VirusTotal");
   try {
     if (API_KEY == "") {
       return {

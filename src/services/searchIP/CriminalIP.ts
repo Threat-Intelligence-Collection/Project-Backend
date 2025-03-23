@@ -5,11 +5,12 @@ import {
   CriminalObject,
 } from "../../../types/searchIPResponse/CriminalIPType";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
+import { buildUrl } from "./simplifyFunction";
 
 const API_KEY = process.env.CRIMINAL_IP_API_KEY || "";
 
 async function fetchCriminalReport(ipAddress: string) : Promise <CriminalObject | ApiResponse> {
-  const url = `https://api.criminalip.io/v1/asset/ip/report?ip=${ipAddress}`;
+  const url = buildUrl(ipAddress, "CriminalIP");
   try {
     if (API_KEY == "") {
       return { success: false, status: 404, message: "Abuse IPDB API Key not found!!"};

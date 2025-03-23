@@ -1,9 +1,10 @@
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
 import { BlockList } from "../../../types/searchIPResponse/blockListType";
 import fetch from "node-fetch";
+import { buildUrl } from "./simplifyFunction";
 
 async function fetchBlockList(ipAddress: string) : Promise<BlockList | ApiResponse>{
-  const url = `http://api.blocklist.de/api.php?ip=${ipAddress}&start=1`;
+  const url = buildUrl(ipAddress, "BlockList");
   try {
     const response = await fetch(url);
     if (!response.ok) {

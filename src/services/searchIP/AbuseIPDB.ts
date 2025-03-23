@@ -3,7 +3,7 @@ import type { AbuseIPObject } from "../../../types/searchIPResponse/AbuseIPDBTyp
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
 import {
   isValidApiKey,
-  buildAbuseIPDBUrl,
+  buildUrl,
   generateHeaders,
   handleError,
   parseAbuseIPDBResponse,
@@ -15,8 +15,8 @@ import {
  * @returns AbuseIPObject or ApiResponse
  */
 const fetchAbuseReport = async (
-  API_KEY: string,
-  ipAddress: string
+  ipAddress: string,
+  API_KEY: string
 ): Promise<AbuseIPObject | ApiResponse> => {
   if (!isValidApiKey(API_KEY)) {
     return {
@@ -26,11 +26,11 @@ const fetchAbuseReport = async (
     };
   }
 
-  const URL = buildAbuseIPDBUrl(ipAddress);
+  const url = buildUrl(ipAddress, "AbuseIPDB");
   const headers = generateHeaders(API_KEY);
-
+  console.log("url", url, "headers", headers, "API key" ,API_KEY);
   try {
-    const response = await fetch(URL, { method: "GET", headers });
+    const response = await fetch(url, { method: "GET", headers });
 
     if (!response.ok) {
       return handleError(

@@ -2,10 +2,11 @@ import fetch from "node-fetch";
 import * as cheerio from "cheerio";
 import { IPInfo } from "../../../types/searchIPResponse/DBIPType";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
+import { buildUrl } from "./simplifyFunction";
 async function fetchDBIP(
   ipAddress: string
 ): Promise<IPInfo | ApiResponse> {
-  const url = `https://db-ip.com/${ipAddress}`;
+  const url = buildUrl(ipAddress, "DBIP");
   try {
     const response = await fetch(url);
     if (!response.ok) {

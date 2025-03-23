@@ -13,16 +13,32 @@ import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
 const isValidApiKey = (key: string): boolean => key.trim() !== "";
 
 /**
- * Build the URL for fetching data from AbuseIPDB
+ * Build the URL for fetching data from provider url
  * @param ipAddress is an IP address that we want to check
+ * @param companyName is a name of the company that we want to check
  * @param maxAgeInDays is number of days that we want to check the IP address
- * @returns URL for fetching data from AbuseIPDB
+ * @returns URL for fetching data from provider
  */
-const buildAbuseIPDBUrl = (
+const buildUrl = (
   ipAddress: string,
+  companyName: string,
   maxAgeInDays: number = 90
-): string =>
-  `https://api.abuseipdb.com/api/v2/check?ipAddress=${ipAddress}&maxAgeInDays=${maxAgeInDays}`;
+): string => {
+  switch (companyName) {
+    case "AbuseIPDB":
+      return `https://api.abuseipdb.com/api/v2/check?ipAddress=${ipAddress}&maxAgeInDays=${maxAgeInDays}`;
+    case "BlockList":
+      return `http://api.blocklist.de/api.php?ip=${ipAddress}&start=1`;
+    case "CriminalIP" :
+      return `https://api.criminalip.io/v1/asset/ip/report?ip=${ipAddress}`;
+    case "DBIP" :
+      return `https://db-ip.com/${ipAddress}`;
+    case "VirusTotal" :
+      return `https://www.virustotal.com/api/v3/ip_addresses/${ipAddress}`;
+    default:
+      return "";
+  }
+};
 
 /**
  * Generate headers for fetching data from AbuseIPDB
@@ -53,7 +69,17 @@ const parseAbuseIPDBResponse = async (
  */
 const handleError = (error: unknown): ApiResponse => {
   console.error("Error:", error);
-  return { success: false, status: 503 ,message: "Fetch data fail from AbuseIPDB!" };
+  return {
+    success: false,
+    status: 503,
+    message: "Fetch data fail from AbuseIPDB!",
+  };
 };
 
-export { isValidApiKey, buildAbuseIPDBUrl, generateHeaders, parseAbuseIPDBResponse, handleError };
+export {
+  isValidApiKey,
+  buildUrl,
+  generateHeaders,
+  parseAbuseIPDBResponse,
+  handleError,
+};
