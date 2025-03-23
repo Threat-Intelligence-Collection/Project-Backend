@@ -4,8 +4,9 @@ import {
   VirusTotalIPreport,
 } from "../../../types/searchIPResponse/VirusTotalType";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
-import { generateHeaders, parseResponse } from "./simplifyFunction";
-import { isValidApiKey, buildUrl } from "./../buildUrl/buildUrl";
+import { parseResponse } from "./../function/parseResponse/parseResponse";
+import { isValidApiKey, buildUrl } from "../function/buildUrl/buildUrl";
+import { generateHeaders } from "../function/generateHeaders/generateHeaders";
 
 async function fetchVirusTotalData(
   ipAddress: string, API_KEY: string

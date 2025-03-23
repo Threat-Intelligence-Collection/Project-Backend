@@ -1,13 +1,10 @@
 import fetch from "node-fetch";
-import "dotenv/config";
 import { CriminalObject } from "../../../types/searchIPResponse/CriminalIPType";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
-import {
-  generateHeaders,
-  handleError,
-  parseResponse,
-} from "./simplifyFunction";
-import { isValidApiKey, buildUrl } from "./../buildUrl/buildUrl";
+import { handleError } from "./simplifyFunction";
+import { parseResponse } from "./../function/parseResponse/parseResponse";
+import { isValidApiKey, buildUrl } from "../function/buildUrl/buildUrl";
+import { generateHeaders } from "../function/generateHeaders/generateHeaders";
 
 async function fetchCriminalReport(
   ipAddress: string,
