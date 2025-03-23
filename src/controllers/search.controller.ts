@@ -14,6 +14,7 @@ import { fetchUrlVoid } from "@src/services/searchDomain/UrlVoid";
 import { fetchIsMalicious } from "@src/services/searchDomain/IsMalicious";
 import { fetchNeutrino } from "@src/services/searchDomain/Neutrino";
 import { reportData } from "types/searchDomainResponse/CriminalDomainType";
+import "dotenv/config";
 
 function calculateIPRisk(data: any): number {
   let score = 0;
@@ -105,12 +106,15 @@ async function searchIP({
     const ipv4Regex =
       /^(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}$/;
     if (!params.ip) {
-      return { success: false, message: "IP must be provided!" };
+      return { success: false, status: 400, message: "IP must be provided!" };
     }
     if (!ipv4Regex.test(params.ip)) {
-      return { success: false, message: "Invalid IP format!" };
+      return { success: false, status: 400, message: "Invalid IP format!" };
     }
-    const Abuseresult = await fetchAbuseReport(params.ip);
+    const Abuseresult = await fetchAbuseReport(
+      params.ip,
+      process.env.ABUSE_IPDB_API_KEY || ""
+    );
     const Virusresult = await fetchVirusTotalData(params.ip);
     const DBIPresult = await fetchDBIP(params.ip);
     const Criminalresult = await fetchCriminalReport(params.ip);
@@ -141,7 +145,7 @@ async function searchIP({
     } else if (typeof error === "string") {
       errorMessage = error;
     }
-    return { success: false, message: errorMessage };
+    return { success: false, status: 500, message: errorMessage };
   }
 }
 
@@ -244,12 +248,14 @@ async function searchDomain({
     if (!params.domainName) {
       return {
         success: false,
+        status: 404,
         message: "Domain name must be provided!",
       };
     }
     if (!domainRegex.test(params.domainName)) {
       return {
         success: false,
+        status: 400,
         message: "Invalid Domain format!",
       };
     }
@@ -269,6 +275,7 @@ async function searchDomain({
 
     return {
       success: true,
+      status: 200,
       UrlVoidData: UrlVoidresult,
       virusTotalData: Virusresult,
       IsMaliCiousData: IsMaliciousresult,
@@ -283,7 +290,7 @@ async function searchDomain({
     } else if (typeof error === "string") {
       errorMessage = error;
     }
-    return { success: false, message: errorMessage };
+    return { success: false, status: 500, message: errorMessage };
   }
 }
 
