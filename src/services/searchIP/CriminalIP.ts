@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { CriminalObject } from "../../../types/searchIPResponse/CriminalIPType";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
-import { handleError } from "./simplifyFunction";
+import { handleError } from "../handler/error_handling";
 import { parseResponse } from "./../function/parseResponse/parseResponse";
 import { isValidApiKey, buildUrl } from "../function/buildUrl/buildUrl";
 import { generateHeaders } from "../function/generateHeaders/generateHeaders";
@@ -14,11 +14,7 @@ async function fetchCriminalReport(
   const headers = generateHeaders(API_KEY, "CriminalIP");
   try {
     if (!isValidApiKey(API_KEY)) {
-      return {
-        success: false,
-        status: 404,
-        message: "Criminal IP API Key not found!!",
-      };
+      return handleError(404, "CriminalIP API Key not found!!");
     }
     const response = await fetch(url, {
       method: "GET",
@@ -26,13 +22,21 @@ async function fetchCriminalReport(
     });
 
     if (!response.ok) {
-      return handleError(
-        `Failed to fetch data: ${response.status} - ${response.statusText}`
+      throw new Error(
+        `Failed to fetch data. HTTP Status Code: ${response.status}`
       );
     }
-    return await parseResponse<CriminalObject>(response, "CriminalIP");
-  } catch (error) {
-    return handleError(error);
+    return await parseResponse<CriminalObject>(
+      response,
+      "CriminalIP",
+      ipAddress
+    );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return handleError(500, `Internal Error: ${error.message}`);
+    } else {
+      return handleError(500, "Unknown internal error");
+    }
   }
 }
 

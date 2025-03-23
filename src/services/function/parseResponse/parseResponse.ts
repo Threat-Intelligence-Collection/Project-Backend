@@ -3,6 +3,7 @@ import "dotenv/config";
 import type { AbuseIPDBResponseType } from "../../../../types/searchIPResponse/AbuseIPDBType";
 import { CriminalResponseType } from "../../../../types/searchIPResponse/CriminalIPType";
 import { VirusTotalResponse } from "../../../../types/searchIPResponse/VirusTotalType";
+import { scrapiingIP } from "../webScraping/webScrapingIP";
 
 /**
  * Parse the response from AbuseIPDB
@@ -11,7 +12,8 @@ import { VirusTotalResponse } from "../../../../types/searchIPResponse/VirusTota
  */
 const parseResponse = async <T>(
   response: Response,
-  companyName: string
+  companyName: string,
+  ipAddress: string
 ): Promise<T> => {
   switch (companyName) {
     case "AbuseIPDB": {
@@ -42,6 +44,12 @@ const parseResponse = async <T>(
         Analysis_stats: VirusTotalresponse.data.attributes.last_analysis_stats,
       };
       return filteredData as T;
+    }
+    case "BlockList": {
+      return (await scrapiingIP<T>(response, companyName, ipAddress)) as T;
+    }
+    case "DBIP": {
+      return (await scrapiingIP<T>(response, companyName, ipAddress)) as T;
     }
     default:
       throw new Error("Unsupported company");
