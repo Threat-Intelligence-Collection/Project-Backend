@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 import * as cheerio from "cheerio";
 import { IPInfo } from "../../../types/searchIPResponse/DBIPType";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
-import { buildUrl } from "./simplifyFunction";
+import { buildUrl } from "./../buildUrl/buildUrl";
 async function fetchDBIP(
   ipAddress: string
 ): Promise<IPInfo | ApiResponse> {

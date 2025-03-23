@@ -2,12 +2,11 @@ import fetch from "node-fetch";
 import type { AbuseIPObject } from "../../../types/searchIPResponse/AbuseIPDBType";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
 import {
-  isValidApiKey,
-  buildUrl,
   generateHeaders,
   handleError,
-  parseAbuseIPDBResponse,
+  parseResponse,
 } from "./simplifyFunction";
+import { isValidApiKey, buildUrl } from "./../buildUrl/buildUrl";
 
 /**
  * Fetch data from AbuseIPDB
@@ -27,8 +26,7 @@ const fetchAbuseReport = async (
   }
 
   const url = buildUrl(ipAddress, "AbuseIPDB");
-  const headers = generateHeaders(API_KEY);
-  console.log("url", url, "headers", headers, "API key" ,API_KEY);
+  const headers = generateHeaders(API_KEY, "AbuseIPDB");
   try {
     const response = await fetch(url, { method: "GET", headers });
 
@@ -37,8 +35,7 @@ const fetchAbuseReport = async (
         `Failed to fetch data: ${response.status} - ${response.statusText}`
       );
     }
-
-    return await parseAbuseIPDBResponse(response);
+    return await parseResponse<AbuseIPObject>(response, "AbuseIPDB");
   } catch (error) {
     return handleError(error);
   }

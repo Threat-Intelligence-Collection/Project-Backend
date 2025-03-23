@@ -52,6 +52,5 @@ async function fetchNeutrino(domainName: string): Promise<NeutrinoData | ApiResp
     };
   }
 }
-fetchNeutrino("werdotx.shop");
 
 export { fetchNeutrino };

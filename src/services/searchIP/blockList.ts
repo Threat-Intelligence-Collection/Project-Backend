@@ -1,7 +1,7 @@
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
 import { BlockList } from "../../../types/searchIPResponse/blockListType";
 import fetch from "node-fetch";
-import { buildUrl } from "./simplifyFunction";
+import { buildUrl } from "./../buildUrl/buildUrl";
 
 async function fetchBlockList(ipAddress: string) : Promise<BlockList | ApiResponse>{
   const url = buildUrl(ipAddress, "BlockList");

@@ -115,9 +115,15 @@ async function searchIP({
       params.ip,
       process.env.ABUSE_IPDB_API_KEY || ""
     );
-    const Virusresult = await fetchVirusTotalData(params.ip);
+    const Virusresult = await fetchVirusTotalData(
+      params.ip,
+      process.env.VIRUS_TOTAL_API_KEY || ""
+    );
     const DBIPresult = await fetchDBIP(params.ip);
-    const Criminalresult = await fetchCriminalReport(params.ip);
+    const Criminalresult = await fetchCriminalReport(
+      params.ip,
+      process.env.CRIMINAL_IP_API_KEY || ""
+    );
     const BlockListresult = await fetchBlockList(params.ip);
 
     const riskScore = calculateIPRisk({
