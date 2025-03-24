@@ -53,31 +53,14 @@ async function fetchIPReport<T>(
 
     // Check for the general HTTP status
     if (!response.ok) {
-      throw new AppError(
-        `Failed to fetch data from ${sourceType}. HTTP Status Code: ${response.status}`,
-        response.status
-      );
+      throw AppError.fromApiResponse(response, sourceType);
     }
 
     const result = await parseIPResponse<T>(response, sourceType, ipAddress);
 
-    if (
-      sourceType === "CriminalIP" &&
-      result &&
-      (result as any).status !== 200
-    ) {
-      throw new AppError(
-        `Failed to fetch data from ${sourceType}. API status: ${
-          (result as any).status
-        } Message: ${(result as any).message}`,
-        (result as any).status
-      );
-    }
-
     if (!result) {
       return handleError(503, `Failed to fetch data from ${sourceType}`);
     }
-
     return result;
   } catch (error: unknown) {
     if (error instanceof AppError) {

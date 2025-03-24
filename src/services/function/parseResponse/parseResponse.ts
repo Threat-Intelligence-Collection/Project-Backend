@@ -25,6 +25,7 @@ const parseIPResponse = async <T>(
     }
     case "CriminalIP": {
       const Criminalresponse = (await response.json()) as CriminalResponseType;
+      console.log(Criminalresponse);
       const result = {
         ip: Criminalresponse.ip,
         score: Criminalresponse.score,

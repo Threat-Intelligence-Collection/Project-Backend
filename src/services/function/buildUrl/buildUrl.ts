@@ -22,11 +22,10 @@ const isValidApiSecret = (key: string): boolean => key.trim() !== "";
 const buildUrlForIPSearching = (
   ipAddress: string,
   companyName: string,
-  maxAgeInDays: number = 90
 ): string => {
   switch (companyName) {
     case "AbuseIPDB":
-      return `https://api.abuseipdb.com/api/v2/check?ipAddress=${ipAddress}&maxAgeInDays=${maxAgeInDays}`;
+      return `https://api.abuseipdb.com/api/v2/check?ipAddress=${ipAddress}`;
     case "BlockList":
       return `http://api.blocklist.de/api.php?ip=${ipAddress}&start=1`;
     case "CriminalIP":
