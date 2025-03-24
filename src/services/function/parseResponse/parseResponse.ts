@@ -3,7 +3,8 @@ import "dotenv/config";
 import type { AbuseIPDBResponseType } from "../../../../types/searchIPResponse/AbuseIPDBType";
 import { CriminalResponseType } from "../../../../types/searchIPResponse/CriminalIPType";
 import { VirusTotalResponse } from "../../../../types/searchIPResponse/VirusTotalType";
-import { scrapiingIP } from "../webScraping/webScrapingIP";
+import { scraping } from "../webScraping/webScrapingIP";
+import { VirusTotalDomainResponseType } from "../../../../types/searchDomainResponse/VirusTotalDomainType";
 
 /**
  * Parse the response from AbuseIPDB
@@ -50,10 +51,10 @@ const parseIPResponse = async <T>(
       return filteredData as T;
     }
     case "BlockList": {
-      return (await scrapiingIP<T>(response, companyName, ipAddress || "")) as T;
+      return (await scraping<T>(response, companyName, ipAddress || "")) as T;
     }
     case "DBIP": {
-      return (await scrapiingIP<T>(response, companyName, ipAddress || "")) as T;
+      return (await scraping<T>(response, companyName, ipAddress || "")) as T;
     }
     default:
       throw new Error("Unsupported company");
@@ -68,6 +69,7 @@ const parseIPResponse = async <T>(
 const parseDomainResponse = async <T>(
   response: Response,
   companyName: string,
+  domainName?: string
 ): Promise<T> => {
   switch (companyName) {
     case "CriminalIP": {
@@ -76,9 +78,25 @@ const parseDomainResponse = async <T>(
     case "IsMalicious": {
       return (await response.json()) as T;
     }
+    case "Neutrino": {
+      return (await response.json()) as T;
+    }
+    case "VirusTotal": {
+      const VirusTotalresponse =
+        (await response.json()) as VirusTotalDomainResponseType;
+      const filteredData = {
+        domainName: domainName,
+        last_analysis_stats:
+          VirusTotalresponse.data.attributes.last_analysis_stats,
+      };
+      return filteredData as T;
+    }
+    case "UrlVoid": {
+      return await scraping<T>(response, companyName);
+    }
     default:
       throw new Error("Unsupported company");
   }
 };
 
-export { parseIPResponse, parseDomainResponse};
+export { parseIPResponse, parseDomainResponse };

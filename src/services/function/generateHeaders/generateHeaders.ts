@@ -1,7 +1,8 @@
 /**
  * Generate headers for fetching data from AbuseIPDB
  * @param ipAddress Generate headers for fetching data from AbuseIPDB
- * @returns Headers for fetching data from AbuseIPDBs
+ * @param companyName Company name that provides the service
+ * @returns Headers for fetching data from all providers
  */
 const generateIPSearchingHeaders = (
   apikey: string,
@@ -27,6 +28,14 @@ const generateIPSearchingHeaders = (
   }
 };
 
+/**
+ * Generate headers for fetching data from AbuseIPDB
+ * @param ipAddress Generate headers for fetching data from AbuseIPDB
+ * @param companyName Company name that provides the service
+ * @param UserID user id for neutrino
+ * @param apiSecret api secret for IsMalicious
+ * @returns Headers for fetching data from all providers
+ */
 const generateDomainSearchingHeaders = (
   apiKey: string,
   companyName: string,

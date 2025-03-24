@@ -1,10 +1,10 @@
 import { Response } from "node-fetch";
 import * as cheerio from "cheerio";
 
-const scrapiingIP = async <T>(
+const scraping = async <T>(
   response: Response,
   companyName: string,
-  ipAddress: string
+  ipAddress?: string
 ): Promise<T> => {
   switch (companyName) {
     case "BlockList": {
@@ -50,9 +50,58 @@ const scrapiingIP = async <T>(
        return {} as T; 
       }
     }
+    case "UrlVoid": {
+      const htmlContent = await response.text();
+      const $ = cheerio.load(htmlContent);
+  
+      const result = {
+        website: $("td:contains('Website Address')").next().text().trim(),
+        lastAnalysis: $("td:contains('Last Analysis')")
+          .next()
+          .text()
+          .trim()
+          .split("|")[0]
+          .trim(),
+        detectionCounts: $("td:contains('Detections Counts')")
+          .next()
+          .text()
+          .trim(),
+        domainRegistration: $("td:contains('Domain Registration')")
+          .next()
+          .text()
+          .trim(),
+        ipAddress: $("td:contains('IP Address')")
+          .next()
+          .find("strong")
+          .text()
+          .trim(),
+        asn: $("td:contains('ASN')").next().text().trim(),
+        serverLocation: $("td:contains('Server Location')").next().text().trim(),
+        securityProviders: [] as { name: string; status: string }[],
+      };
+  
+      $("tbody tr").each((_, element) => {
+        const providerName = $(element)
+          .find("td:first-child span.font-bold")
+          .text()
+          .trim();
+        if (providerName) {
+          const statusElement = $(element).find("td:nth-child(2) span");
+          const status = statusElement.hasClass("text-danger")
+            ? "Detected"
+            : "Nothing Found";
+          result.securityProviders.push({
+            name: providerName,
+            status,
+          });
+        }
+      });
+
+      return result as T;
+    }
     default:
       return {} as T;
   }
 };
 
-export { scrapiingIP };
+export { scraping };
