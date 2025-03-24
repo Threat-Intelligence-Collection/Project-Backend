@@ -8,12 +8,14 @@ import { scrapiingIP } from "../webScraping/webScrapingIP";
 /**
  * Parse the response from AbuseIPDB
  * @param response Response from AbuseIPDB
+ * @param companyName Name of provider
+ * @param ipAddress IP address
  * @returns data in abuseipdb object
  */
-const parseResponse = async <T>(
+const parseIPResponse = async <T>(
   response: Response,
   companyName: string,
-  ipAddress: string
+  ipAddress?: string
 ): Promise<T> => {
   switch (companyName) {
     case "AbuseIPDB": {
@@ -46,14 +48,35 @@ const parseResponse = async <T>(
       return filteredData as T;
     }
     case "BlockList": {
-      return (await scrapiingIP<T>(response, companyName, ipAddress)) as T;
+      return (await scrapiingIP<T>(response, companyName, ipAddress || "")) as T;
     }
     case "DBIP": {
-      return (await scrapiingIP<T>(response, companyName, ipAddress)) as T;
+      return (await scrapiingIP<T>(response, companyName, ipAddress || "")) as T;
     }
     default:
       throw new Error("Unsupported company");
   }
 };
 
-export { parseResponse };
+/**
+ * Parse the response from AbuseIPDB
+ * @param response Response from AbuseIPDB
+ * @returns data in abuseipdb object
+ */
+const parseDomainResponse = async <T>(
+  response: Response,
+  companyName: string,
+): Promise<T> => {
+  switch (companyName) {
+    case "CriminalIP": {
+      return (await response.json()) as T;
+    }
+    case "IsMalicious": {
+      return (await response.json()) as T;
+    }
+    default:
+      throw new Error("Unsupported company");
+  }
+};
+
+export { parseIPResponse, parseDomainResponse};

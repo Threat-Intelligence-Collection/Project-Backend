@@ -1,19 +1,29 @@
 import fetch from "node-fetch";
 import "dotenv/config";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
-import { NeutrinoData } from "../../../types/searchDomainResponse/NeutrinoType"
+import { NeutrinoData } from "../../../types/searchDomainResponse/NeutrinoType";
+import { handleError } from "../handler/error_handling";
+import { AppError } from "../handler/error_interface";
 
-const API_KEY = process.env.NEUTRINO_API_KEY || "";
-const USER_ID = process.env.NEUTRINO_USER_ID || "";
+type ResponseTypes =
+  | "CriminalIP"
+  | "IsMalicious"
+  | "Neutrino"
+  | "UrlVoid"
+  | "VirusTotal";
 
-const headers = {
-  "User-ID": USER_ID,
-  "API-Key": API_KEY,
-  "Content-Type": "application/x-www-form-urlencoded",
-};
-
-async function fetchNeutrino(domainName: string): Promise<NeutrinoData | ApiResponse> {
+async function fetchNeutrino(
+  domainName: string,
+  sourceType: ResponseTypes,
+  API_KEY: string,
+  USER_ID: string
+): Promise<NeutrinoData | ApiResponse> {
   const URL = "https://neutrinoapi.net/domain-lookup";
+  const headers = {
+    "User-ID": USER_ID,
+    "API-Key": API_KEY,
+    "Content-Type": "application/x-www-form-urlencoded",
+  };  
   const formData = new URLSearchParams();
   formData.append("host", domainName);
   formData.append("live", "true");
@@ -30,26 +40,32 @@ async function fetchNeutrino(domainName: string): Promise<NeutrinoData | ApiResp
     });
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new AppError(
+        `Failed to fetch data from ${sourceType}. HTTP Status Code: ${response.status}`,
+        response.status
+      );
     }
 
-    const result = await response.json() as NeutrinoData;
-    if(result){
-      return result
-    }else{
+    const result = (await response.json()) as NeutrinoData;
+    if (result) {
+      return result;
+    } else {
       return {
         success: false,
         status: 503,
         message: "Data fetched failed",
       };
     }
-  } catch (error) {
-    console.error("Error fetching domain lookup data:", error);
-    return {
-      success: false,
-      status: 503,
-      message: error instanceof Error ? error.message : "Unknown error",
-    };
+  } catch (error: unknown) {
+    if (error instanceof AppError) {
+      return handleError(error.statusCode, error.message);
+    }
+    return handleError(
+      500,
+      error instanceof Error
+        ? `Internal Error: ${error.message}`
+        : "Unknown internal error"
+    );
   }
 }
 

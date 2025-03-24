@@ -130,17 +130,17 @@ async function searchIP({
     );
     const BlockListresult = await fetchIPReport<BlockList>(params.ip, "BlockList");
 
-    const riskScore = calculateIPRisk({
-      abuseData: Abuseresult,
-      virusTotalData: Virusresult,
-      DBIPData: DBIPresult,
-      CriminalData: Criminalresult,
-      BlockListData: BlockListresult,
-    });
+    // const riskScore = calculateIPRisk({
+    //   abuseData: Abuseresult,
+    //   virusTotalData: Virusresult,
+    //   DBIPData: DBIPresult,
+    //   CriminalData: Criminalresult,
+    //   BlockListData: BlockListresult,
+    // });
 
     return {
       success: true,
-      riskScore: riskScore,
+      // riskScore: riskScore,
       abuseData: Abuseresult,
       virusTotalData: Virusresult,
       DBIPData: DBIPresult,
@@ -269,19 +269,19 @@ async function searchDomain({
         message: "Invalid Domain format!",
       };
     }
-    const CriminalResult = await fetchCriminalDomainReport(params.domainName);
-    const Virusresult = await fetchVirusTotalDomainData(params.domainName);
+    const CriminalResult = await fetchCriminalDomainReport(params.domainName, "CriminalIP", process.env.CRIMINAL_IP_API_KEY || "");
+    const IsMaliciousresult = await fetchIsMalicious(params.domainName, "IsMalicious",process.env.ISMALICIOUS_API_KEY || "", process.env.ISMALICIOUS_API_SECRET || "");
+    const NeutrinoResult = await fetchNeutrino(params.domainName, "Neutrino", process.env.NEUTRINO_API_KEY || "", process.env.NEUTRINO_USER_ID || "");
     const UrlVoidresult = await fetchUrlVoid(params.domainName);
-    const IsMaliciousresult = await fetchIsMalicious(params.domainName);
-    const NeutrinoResult = await fetchNeutrino(params.domainName);
+    const Virusresult = await fetchVirusTotalDomainData(params.domainName);
 
-    const riskScore = calculateDomainRisk({
-      UrlVoidData: UrlVoidresult,
-      virusTotalData: Virusresult,
-      IsMaliCiousData: IsMaliciousresult,
-      CriminalData: CriminalResult,
-      NeutrinoData: NeutrinoResult,
-    });
+    // const riskScore = calculateDomainRisk({
+    //   UrlVoidData: UrlVoidresult,
+    //   virusTotalData: Virusresult,
+    //   IsMaliCiousData: IsMaliciousresult,
+    //   CriminalData: CriminalResult,
+    //   NeutrinoData: NeutrinoResult,
+    // });
 
     return {
       success: true,

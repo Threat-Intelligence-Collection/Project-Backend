@@ -1,40 +1,40 @@
 import fetch from "node-fetch";
 import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
 import { handleError } from "../handler/error_handling";
-import { parseIPResponse } from "../function/parseResponse/parseResponse";
+import { parseDomainResponse } from "../function/parseResponse/parseResponse";
 import {
-  buildUrlForIPSearching,
+  buildUrlForDomainSearching,
   isValidApiKey,
 } from "../function/buildUrl/buildUrl";
 import { generateIPSearchingHeaders } from "../function/generateHeaders/generateHeaders";
-import { AppError } from "../handler/error_interface";
 
 type ResponseTypes =
-  | "AbuseIPDB"
-  | "BlockList"
   | "CriminalIP"
-  | "DBIP"
+  | "IsMalicious"
+  | "Neutrino"
+  | "UrlVoid"
   | "VirusTotal";
 
 /**
  * Generalized fetch function for multiple IP reporting services
- * @param ipAddress IP address to check
+ * @param domainName Domain name to check
  * @param sourceType Source type name
  * @param API_KEY Optional API Key
  * @returns Parsed response or ApiResponse error
  */
-async function fetchIPReport<T>(
+async function fetchDomainReport<T>(
   ipAddress: string,
   sourceType: ResponseTypes,
   API_KEY?: string
 ): Promise<T | ApiResponse> {
-  const url = buildUrlForIPSearching(ipAddress, sourceType);
+  const url = buildUrlForDomainSearching(ipAddress, sourceType);
 
   let headers: Record<string, string> | undefined;
 
   const sourcesRequiringApiKey: ResponseTypes[] = [
-    "AbuseIPDB",
     "CriminalIP",
+    "IsMalicious",
+    "Neutrino",
     "VirusTotal",
   ];
 
@@ -51,28 +51,13 @@ async function fetchIPReport<T>(
       headers,
     });
 
-    // Check for the general HTTP status
     if (!response.ok) {
-      throw new AppError(
-        `Failed to fetch data from ${sourceType}. HTTP Status Code: ${response.status}`,
-        response.status
+      throw new Error(
+        `Failed to fetch data. HTTP Status Code: ${response.status}`
       );
     }
 
-    const result = await parseIPResponse<T>(response, sourceType, ipAddress);
-
-    if (
-      sourceType === "CriminalIP" &&
-      result &&
-      (result as any).status !== 200
-    ) {
-      throw new AppError(
-        `Failed to fetch data from ${sourceType}. API status: ${
-          (result as any).status
-        } Message: ${(result as any).message}`,
-        (result as any).status
-      );
-    }
+    const result = await parseDomainResponse<T>(response, sourceType);
 
     if (!result) {
       return handleError(503, `Failed to fetch data from ${sourceType}`);
@@ -80,16 +65,12 @@ async function fetchIPReport<T>(
 
     return result;
   } catch (error: unknown) {
-    if (error instanceof AppError) {
-      return handleError(error.statusCode, error.message);
+    if (error instanceof Error) {
+      return handleError(500, `Internal Error: ${error.message}`);
+    } else {
+      return handleError(500, "Unknown internal error");
     }
-    return handleError(
-      500,
-      error instanceof Error
-        ? `Internal Error: ${error.message}`
-        : "Unknown internal error"
-    );
   }
 }
 
-export { fetchIPReport };
+export { fetchDomainReport };

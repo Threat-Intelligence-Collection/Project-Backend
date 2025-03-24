@@ -16,12 +16,12 @@ interface ApiResponse {
 
 interface searchIPresponse {
   success: boolean;
-  riskScore: number;
   abuseData: AbuseIPObject | ApiResponse;
   virusTotalData: VirusTotalIPreport | ApiResponse;
   DBIPData: IPInfo | ApiResponse;
   CriminalData: CriminalObject | ApiResponse;
   BlockListData: BlockList | ApiResponse;
+  riskScore?: number;
 }
 
 interface searchDomainResponse {
