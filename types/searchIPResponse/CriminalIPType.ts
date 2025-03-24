@@ -43,6 +43,8 @@ interface CriminalResponseType {
   issues: issues;
   score: score;
   whois: whois;
+  status?: number;
+  message?: string;
 }
 
 export { CriminalResponseType, CriminalObject };

@@ -1,3 +1,5 @@
+import { CriminalResponseType } from "../../../types/searchIPResponse/CriminalIPType";
+
 class AppError extends Error {
   constructor(
     message: string,
@@ -10,7 +12,7 @@ class AppError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 
-  static fromApiResponse(response: any, source: string): AppError {
+  static async fromApiResponse(response: any, source: string): Promise<AppError> {
     switch (source) {
       case "AbuseIPDB": {
         return new AppError(
@@ -28,9 +30,10 @@ class AppError extends Error {
           );
         }
       case "CriminalIP": {
+        const Criminalresponse = (await response.json()) as CriminalResponseType;
         return new AppError(
-          `CriminalIP API Error: ${response.message || "Unknown error"}`,
-          response.status,
+          `CriminalIP API Error: ${Criminalresponse.message || "Unknown error"}`,
+          Criminalresponse.status,
           source
         );
       }
