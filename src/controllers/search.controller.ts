@@ -3,12 +3,7 @@ import {
   searchIPresponse,
   searchDomainResponse,
 } from "../../types/ApiResponse/ApiResponse";
-import { fetchCriminalDomainReport } from "@src/services/searchDomain/CriminalIP";
-import { fetchVirusTotalDomainData } from "@src/services/searchDomain/Virustotal";
-import { fetchUrlVoid } from "@src/services/searchDomain/UrlVoid";
-import { fetchIsMalicious } from "@src/services/searchDomain/IsMalicious";
-import { fetchNeutrino } from "@src/services/searchDomain/Neutrino";
-import { reportData } from "types/searchDomainResponse/CriminalDomainType";
+import { CriminalDomainResponseType, reportData } from "types/searchDomainResponse/CriminalDomainType";
 import "dotenv/config";
 import { fetchIPReport } from "@src/services/searchIP/fetchIP";
 import { AbuseIPObject } from "../../types/searchIPResponse/AbuseIPDBType";
@@ -16,6 +11,11 @@ import { VirusTotalIPreport } from "../../types/searchIPResponse/VirusTotalType"
 import { IPInfo } from "../../types/searchIPResponse/DBIPType";
 import { CriminalObject } from "../../types/searchIPResponse/CriminalIPType";
 import { BlockList } from "../../types/searchIPResponse/blockListType";
+import { fetchDomainData } from "@src/services/searchDomain/fetchDomain";
+import { IsMaliciousData } from "../../types/searchDomainResponse/IsMaliciousType";
+import { NeutrinoData } from "../../types/searchDomainResponse/NeutrinoType";
+import { URLVoidData } from "../../types/searchDomainResponse/UrlVoidDomainType";
+import { VirusTotalDomain } from "../../types/searchDomainResponse/VirusTotalDomainType";
 
 function calculateIPRisk(data: any): number {
   let score = 0;
@@ -128,7 +128,10 @@ async function searchIP({
       "CriminalIP",
       process.env.CRIMINAL_IP_API_KEY || ""
     );
-    const BlockListresult = await fetchIPReport<BlockList>(params.ip, "BlockList");
+    const BlockListresult = await fetchIPReport<BlockList>(
+      params.ip,
+      "BlockList"
+    );
 
     // const riskScore = calculateIPRisk({
     //   abuseData: Abuseresult,
@@ -269,11 +272,30 @@ async function searchDomain({
         message: "Invalid Domain format!",
       };
     }
-    const CriminalResult = await fetchCriminalDomainReport(params.domainName, "CriminalIP", process.env.CRIMINAL_IP_API_KEY || "");
-    const IsMaliciousresult = await fetchIsMalicious(params.domainName, "IsMalicious",process.env.ISMALICIOUS_API_KEY || "", process.env.ISMALICIOUS_API_SECRET || "");
-    const NeutrinoResult = await fetchNeutrino(params.domainName, "Neutrino", process.env.NEUTRINO_API_KEY || "", process.env.NEUTRINO_USER_ID || "");
-    const UrlVoidresult = await fetchUrlVoid(params.domainName);
-    const Virusresult = await fetchVirusTotalDomainData(params.domainName);
+    const CriminalResult = await fetchDomainData<CriminalDomainResponseType>(
+      params.domainName,
+      "CriminalIP",
+      process.env.CRIMINAL_IP_API_KEY || ""
+    );
+    const IsMaliciousresult = await fetchDomainData<IsMaliciousData>(
+      params.domainName,
+      "IsMalicious",
+      process.env.ISMALICIOUS_API_KEY || "",
+      process.env.ISMALICIOUS_API_SECRET || ""
+    );
+    const NeutrinoResult = await fetchDomainData<NeutrinoData>(
+      params.domainName,
+      "Neutrino",
+      process.env.NEUTRINO_API_KEY || "",
+      "",
+      process.env.NEUTRINO_USER_ID || "",
+    );
+    const UrlVoidresult = await fetchDomainData<URLVoidData>(params.domainName, "UrlVoid");
+    const Virusresult = await fetchDomainData<VirusTotalDomain>(
+      params.domainName,
+      "VirusTotal",
+      process.env.VIRUS_TOTAL_API_KEY || ""
+    );
 
     // const riskScore = calculateDomainRisk({
     //   UrlVoidData: UrlVoidresult,
