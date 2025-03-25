@@ -5,17 +5,16 @@ import { ApiResponse } from "../../../types/ApiResponse/ApiResponse";
 import {
   buildUrlForDomainSearching,
   buildUrlForIPSearching,
-  isValidApiKey,
-  isValidApiSecret,
-} from "../function/buildUrl/buildUrl";
+  isValidKey,
+} from "./function/buildUrl/buildUrl";
 import {
   generateDomainSearchingHeaders,
   generateIPSearchingHeaders,
-} from "../function/generateHeaders/generateHeaders";
+} from "./function/generateHeaders/generateHeaders";
 import {
   parseDomainResponse,
   parseIPResponse,
-} from "../function/parseResponse/parseResponse";
+} from "./function/parseResponse/parseResponse";
 import { AppError } from "../handler/error_interface";
 import { handleError } from "../handler/error_handling";
 import {
@@ -38,6 +37,14 @@ const ipSourcesRequiringApiKey: IPResponseTypes[] = [
   "VirusTotal",
 ];
 
+/**
+ * Validate key function
+ * @param sourceType Source of domain or IP provider
+ * @param API_KEY API_Key
+ * @param API_SECRET API_Secret
+ * @param USER_ID User_ID
+ * @returns Either api response for error or record of headers
+ */
 const validateKey = (
   sourceType: ResponseTypes,
   API_KEY?: string,
@@ -52,18 +59,18 @@ const validateKey = (
   );
 
   if (isDomainSource || isIpSource) {
-    if (!API_KEY || !isValidApiKey(API_KEY)) {
+    if (!API_KEY || !isValidKey(API_KEY)) {
       return left(handleError(404, `${sourceType} API Key not found!!`));
     }
 
     if (
       sourceType === "IsMalicious" &&
-      (!API_SECRET || !isValidApiSecret(API_SECRET))
+      (!API_SECRET || !isValidKey(API_SECRET))
     ) {
       return left(handleError(404, `${sourceType} API Secret not found!!`));
     }
 
-    if (sourceType === "Neutrino" && (!USER_ID || !isValidApiSecret(USER_ID))) {
+    if (sourceType === "Neutrino" && (!USER_ID || !isValidKey(USER_ID))) {
       return left(handleError(404, `${sourceType} User ID not found!!`));
     }
 
@@ -83,6 +90,14 @@ const validateKey = (
   return right(undefined);
 };
 
+/**
+ * Fetch data from url that we want to use.
+ * @param url url that we want to fetch data.
+ * @param sourceType Source of domain or IP provider
+ * @param headers header for fetch data.
+ * @param domainName domain name for Neutrino that want to use it in body
+ * @returns Either api response for error or success response for fetch data.
+ */
 const fetchData = async (
   url: string,
   sourceType: ResponseTypes,
@@ -119,6 +134,16 @@ const fetchData = async (
   }
 };
 
+/**
+ * 
+ * @param searchType Type of data that we want to search included [IP, Domain, Asset]
+ * @param searchTarget IP or Domain that we want to check
+ * @param sourceType Source of domain or IP provider
+ * @param API_KEY API key
+ * @param API_SECRET API secret
+ * @param USER_ID User ID
+ * @returns Either api response for error or generic type data that we disired.
+ */
 async function fetchSearchData<T>(
   searchType: SearchType,
   searchTarget: string,

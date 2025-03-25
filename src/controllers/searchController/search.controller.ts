@@ -2,18 +2,18 @@ import {
   ApiResponse,
   searchIPresponse,
   searchDomainResponse,
-} from "../../types/ApiResponse/ApiResponse";
+} from "../../../types/ApiResponse/ApiResponse";
 import { CriminalDomainResponseType } from "types/searchDomainResponse/CriminalDomainType";
 import "dotenv/config";
-import { AbuseIPObject } from "../../types/searchIPResponse/AbuseIPDBType";
-import { VirusTotalIPreport } from "../../types/searchIPResponse/VirusTotalType";
-import { IPInfo } from "../../types/searchIPResponse/DBIPType";
-import { CriminalObject } from "../../types/searchIPResponse/CriminalIPType";
-import { BlockList } from "../../types/searchIPResponse/blockListType";
-import { IsMaliciousData } from "../../types/searchDomainResponse/IsMaliciousType";
-import { NeutrinoData } from "../../types/searchDomainResponse/NeutrinoType";
-import { URLVoidData } from "../../types/searchDomainResponse/UrlVoidDomainType";
-import { VirusTotalDomain } from "../../types/searchDomainResponse/VirusTotalDomainType";
+import { AbuseIPObject } from "../../../types/searchIPResponse/AbuseIPDBType";
+import { VirusTotalIPreport } from "../../../types/searchIPResponse/VirusTotalType";
+import { IPInfo } from "../../../types/searchIPResponse/DBIPType";
+import { CriminalObject } from "../../../types/searchIPResponse/CriminalIPType";
+import { BlockList } from "../../../types/searchIPResponse/blockListType";
+import { IsMaliciousData } from "../../../types/searchDomainResponse/IsMaliciousType";
+import { NeutrinoData } from "../../../types/searchDomainResponse/NeutrinoType";
+import { URLVoidData } from "../../../types/searchDomainResponse/UrlVoidDomainType";
+import { VirusTotalDomain } from "../../../types/searchDomainResponse/VirusTotalDomainType";
 import { handleError } from "@src/services/handler/error_handling";
 import { AppError } from "@src/services/handler/error_interface";
 import { fetchSearchData } from "@src/services/search/search";

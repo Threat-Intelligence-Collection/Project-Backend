@@ -1,10 +1,10 @@
 import { Response } from "node-fetch";
 import "dotenv/config";
-import type { AbuseIPDBResponseType } from "../../../../types/searchIPResponse/AbuseIPDBType";
-import { CriminalResponseType } from "../../../../types/searchIPResponse/CriminalIPType";
-import { VirusTotalResponse } from "../../../../types/searchIPResponse/VirusTotalType";
+import type { AbuseIPDBResponseType } from "../../../../../types/searchIPResponse/AbuseIPDBType";
+import { CriminalResponseType } from "../../../../../types/searchIPResponse/CriminalIPType";
+import { VirusTotalResponse } from "../../../../../types/searchIPResponse/VirusTotalType";
 import { scraping } from "../webScraping/webScrapingIP";
-import { VirusTotalDomainResponseType } from "../../../../types/searchDomainResponse/VirusTotalDomainType";
+import { VirusTotalDomainResponseType } from "../../../../../types/searchDomainResponse/VirusTotalDomainType";
 
 /**
  * Parse the response from AbuseIPDB

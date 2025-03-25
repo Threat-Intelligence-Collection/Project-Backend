@@ -1,6 +1,13 @@
 import { Response } from "node-fetch";
 import * as cheerio from "cheerio";
 
+/**
+ * Scraping web site that we use.
+ * @param response Response that use to scraping
+ * @param companyName Company that provide source
+ * @param ipAddress Target IP that we want to check
+ * @returns 
+ */
 const scraping = async <T>(
   response: Response,
   companyName: string,

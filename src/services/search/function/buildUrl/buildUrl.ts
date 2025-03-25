@@ -3,20 +3,12 @@
  * @param key is an API key of AbuseIPDB
  * @returns boolean that indicates key is valid or not
  */
-const isValidApiKey = (key: string): boolean => key.trim() !== "";
-
-/**
- * Check API key is valid or not
- * @param key is an API key of AbuseIPDB
- * @returns boolean that indicates key is valid or not
- */
-const isValidApiSecret = (key: string): boolean => key.trim() !== "";
+const isValidKey = (key: string): boolean => key.trim() !== "";
 
 /**
  * Build the URL for fetching data from provider url
  * @param ipAddress is an IP address that we want to check
  * @param companyName is a name of the company that we want to check
- * @param maxAgeInDays is number of days that we want to check the IP address
  * @returns URL for fetching data from provider
  */
 const buildUrlForIPSearching = (
@@ -39,6 +31,12 @@ const buildUrlForIPSearching = (
   }
 };
 
+/**
+ * Build the URL for fetching data from provider url
+ * @param domainName is an domain name that we want to check
+ * @param companyName is a name of the company that we want to check
+ * @returns URL for fetching data from provider
+ */
 const buildUrlForDomainSearching = (
   domainName: string,
   companyName: string
@@ -62,6 +60,5 @@ const buildUrlForDomainSearching = (
 export {
   buildUrlForIPSearching,
   buildUrlForDomainSearching,
-  isValidApiKey,
-  isValidApiSecret,
+  isValidKey,
 };
