@@ -26,4 +26,4 @@ interface CriminalDomainResponseType {
   };
 }
 
-export { CriminalDomainResponseType }
+export { CriminalDomainResponseType, reportData };
