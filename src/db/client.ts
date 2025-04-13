@@ -88,4 +88,4 @@ async function dropAllTables() {
 
 export { dbConn, dbClient, dropAllTables };
 
-dropAllTables();
+// dropAllTables();
