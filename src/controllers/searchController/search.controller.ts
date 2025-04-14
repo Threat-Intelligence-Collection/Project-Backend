@@ -17,6 +17,8 @@ import { VirusTotalDomain } from "../../../types/searchDomainResponse/VirusTotal
 import { handleError } from "@src/services/handler/error_handling";
 import { AppError } from "@src/services/handler/error_interface";
 import { fetchSearchData } from "@src/services/search/search";
+import { searchAssetResponse } from "../../../types/searchAssetResponse/NDV";
+import { fetchAsset } from "@src/services/searchAsset/searchAsset";
 
 async function searchIP({
   params,
@@ -44,7 +46,12 @@ async function searchIP({
       "VirusTotal",
       process.env.VIRUS_TOTAL_API_KEY || ""
     );
-    const DBIPresult = await fetchSearchData<IPInfo>("IP", params.ip, "DBIP", "");
+    const DBIPresult = await fetchSearchData<IPInfo>(
+      "IP",
+      params.ip,
+      "DBIP",
+      ""
+    );
     const Criminalresult = await fetchSearchData<CriminalObject>(
       "IP",
       params.ip,
@@ -177,4 +184,28 @@ async function searchDomain({
   }
 }
 
-export { searchIP, searchDomain };
+async function searchAsset({
+  params,
+}: {
+  params: { asset: string };
+}): Promise<ApiResponse | searchAssetResponse> {
+  try {
+    if (!params.asset) {
+      throw new AppError(404, "Asset name must be provided!");
+    }
+    const assetResult = await fetchAsset(params.asset);
+    return assetResult._tag === "Left" ? assetResult.left : assetResult.right;
+  } catch (error: unknown) {
+    if (error instanceof AppError) {
+      return handleError(error.statusCode, error.message);
+    }
+    return handleError(
+      500,
+      error instanceof Error
+        ? `Internal Error: ${error.message}`
+        : "Unknown internal error"
+    );
+  }
+}
+
+export { searchIP, searchDomain, searchAsset };
