@@ -7,9 +7,9 @@ import {
   createUser,
   deleteUser,
   getUserByEmail,
+  updateUser,
 } from "@src/controllers/userController/user.controller";
-import { userDTO } from "@src/dto/userDTO";
-import { t } from "elysia";
+import { userDTO, updateUserSchema } from "@src/dto/userDTO";
 
 export const appRoutes = new Elysia()
 
@@ -36,8 +36,7 @@ export const appRoutes = new Elysia()
           tags: ["User"],
         },
       })
-      .delete("/delete", deleteUser, {
-        body: t.Object({ email: t.String() }),
+      .delete("/delete/:email", deleteUser, {
         detail: {
           summary: "Delete a user",
           tags: ["User"],
@@ -46,6 +45,13 @@ export const appRoutes = new Elysia()
       .get("/get/:email", getUserByEmail, {
         detail: {
           summary: "Get user by email",
+          tags: ["User"],
+        },
+      })
+      .put("/update", updateUser, {
+        body: updateUserSchema,
+        detail: {
+          summary: "Update user role",
           tags: ["User"],
         },
       })

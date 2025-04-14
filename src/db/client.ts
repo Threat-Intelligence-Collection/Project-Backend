@@ -45,7 +45,7 @@ const dbClient = drizzle(dbConn, {
     objects,
     tags,
   },
-  logger: true,
+  logger: false,
 });
 
 async function dropAllTables() {

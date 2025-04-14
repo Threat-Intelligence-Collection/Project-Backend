@@ -1,7 +1,6 @@
 import { dbClient } from "@src/db/client";
 import { UserModel } from "@src/model/user.model";
 import { userDTO } from "@src/dto/userDTO";
-import { param } from "drizzle-orm";
 
 const userModel = new UserModel(dbClient);
 
@@ -46,13 +45,39 @@ export async function getUserByEmail({
   }
 }
 
-export async function deleteUser({ body }: { body: typeof userDTO }) {
-  const { email } = body;
+export async function deleteUser({
+  params,
+}: {
+  params: { email: string };
+}) {
   try {
-    const user = await userModel.deleteUser(email);
+    const user = await userModel.deleteUser(params.email);
     return {
       success: true,
       message: "User deleted successfully",
+      data: user,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+}
+
+export async function updateUser({ body }: { body: typeof userDTO }) {
+  const { id, user_name, email, password, user_role } = body;
+  try {
+    const user = await userModel.updateUser(
+      id,
+      user_name,
+      email,
+      password,
+      user_role
+    );
+    return {
+      success: true,
+      message: "User updated successfully",
       data: user,
     };
   } catch (error: any) {

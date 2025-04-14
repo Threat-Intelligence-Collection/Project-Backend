@@ -7,3 +7,11 @@ export const userDTO = t.Object({
   password: t.String(),
   user_role: t.String(),
 });
+
+export const updateUserSchema = t.Object({
+  id: t.String(),
+  user_name: t.Optional(t.String()),
+  email: t.Optional(t.String()),
+  password: t.Optional(t.String()),
+  user_role: t.Optional(t.String()),
+});

@@ -73,4 +73,58 @@ export class UserModel {
       .returning();
     return deletedUser;
   }
+
+  async updateUser(
+    id: number,
+    user_name?: string,
+    email?: string,
+    password?: string,
+    user_role?: string
+  ) {
+    if (!id) {
+      throw new Error("ID is required");
+    }
+
+    const existing = await this.db.select().from(users).where(eq(users.id, id));
+    if (existing.length === 0) {
+      throw new Error(`User with ID ${id} does not exist.`);
+    }
+
+    const current = existing[0];
+
+    const updateData: Partial<typeof users.$inferInsert> = {};
+
+    if (!user_name) {
+      updateData.user_name = current.user_name;
+    } else {
+      updateData.user_name = user_name;
+    }
+    if (!email) {
+      updateData.email = current.email;
+    } else {
+      updateData.email = email;
+    }
+    if (!user_role) {
+      updateData.user_role = current.user_role;
+    } else {
+      updateData.user_role = user_role;
+    }
+    if (!password) {
+      updateData.password = current.password;
+    } else {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      throw new Error("No fields provided for update.");
+    }
+
+    const updatedUser = await this.db
+      .update(users)
+      .set(updateData)
+      .where(eq(users.id, id))
+      .returning();
+
+    return updatedUser;
+  }
 }
