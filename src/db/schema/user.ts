@@ -5,7 +5,7 @@ export const users = pgTable("users", {
   user_name: varchar("user_name", { length: 255 }).notNull(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(),
-  user_role: varchar("user_role", { length: 50 }).notNull().default("user"), // Roles: user, admin, etc.
+  user_role: varchar("user_role", { length: 50 }).notNull().default("user"),
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
