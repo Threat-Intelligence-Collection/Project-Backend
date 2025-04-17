@@ -1,4 +1,3 @@
-// @src/dto/CreateUserDTO.ts
 import { t } from "elysia";
 
 export const userDTO = t.Object({

@@ -1,5 +1,6 @@
 import { pgTable, varchar, timestamp, integer } from "drizzle-orm/pg-core";
 import { asset_attributes } from "./asset_attributes";
+import { relations } from "drizzle-orm";
 
 export const cve_data = pgTable("cve_data", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -13,3 +14,10 @@ export const cve_data = pgTable("cve_data", {
   published: timestamp("published", { withTimezone: true }),
   last_modified: timestamp("last_modified", { withTimezone: true }),
 });
+
+export const cve_dataRelations = relations(cve_data, ({ one }) => ({
+    asset_attributes: one(asset_attributes, {
+        fields: [cve_data.asset_id],
+        references: [asset_attributes.id],
+    }),
+}));

@@ -1,4 +1,6 @@
 import { pgTable, varchar, timestamp, integer } from "drizzle-orm/pg-core";
+import { event_tags } from "./event_tags";
+import { relations } from "drizzle-orm";
 
 export const tags = pgTable("tags", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -7,3 +9,8 @@ export const tags = pgTable("tags", {
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+  event_tags: many(event_tags),
+}));
+

@@ -1,4 +1,6 @@
+import { relations } from "drizzle-orm";
 import { pgTable, varchar, timestamp, integer } from "drizzle-orm/pg-core";
+import { events } from "./events";
 
 export const users = pgTable("users", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -9,3 +11,7 @@ export const users = pgTable("users", {
   created_at: timestamp("created_at").defaultNow().notNull(),
   updated_at: timestamp("updated_at").defaultNow().notNull(),
 });
+
+export const userRelations = relations(users, ({ many }) => ({
+  events: many(events),
+}));

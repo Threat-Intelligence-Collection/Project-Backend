@@ -1,13 +1,16 @@
-import { dbClient } from "@src/db/client";
-import { UserModel } from "@src/model/user.model";
-import { userDTO } from "@src/dto/userDTO";
+import { dbClient } from "@src/model/db/client";
+import { UserService } from "@src/services/user/user.service";
+import { userDTO, updateUserSchema } from "@src/dto/user.dto";
 
-const userModel = new UserModel(dbClient);
+const userService = new UserService(dbClient);
 
-export async function createUser({ body }: { body: typeof userDTO }) {
+type CreateUserDTO = typeof userDTO.static;
+type UpdateUserDTO = typeof updateUserSchema.static;
+
+export async function createUser({ body }: { body: CreateUserDTO }) {
   const { user_name, email, password, user_role } = body;
   try {
-    const user = await userModel.createUser(
+    const user = await userService.createUser(
       user_name,
       email,
       password,
@@ -32,7 +35,7 @@ export async function getUserByEmail({
   params: { email: string };
 }) {
   try {
-    const user = await userModel.getUserByEmail(params.email);
+    const user = await userService.getUserByEmail(params.email);
     return {
       success: true,
       data: user,
@@ -45,13 +48,9 @@ export async function getUserByEmail({
   }
 }
 
-export async function deleteUser({
-  params,
-}: {
-  params: { email: string };
-}) {
+export async function deleteUser({ params }: { params: { email: string } }) {
   try {
-    const user = await userModel.deleteUser(params.email);
+    const user = await userService.deleteUser(params.email);
     return {
       success: true,
       message: "User deleted successfully",
@@ -65,10 +64,10 @@ export async function deleteUser({
   }
 }
 
-export async function updateUser({ body }: { body: typeof userDTO }) {
+export async function updateUser({ body }: { body: UpdateUserDTO }) {
   const { id, user_name, email, password, user_role } = body;
   try {
-    const user = await userModel.updateUser(
+    const user = await userService.updateUser(
       id,
       user_name,
       email,

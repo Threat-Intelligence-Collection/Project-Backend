@@ -1,5 +1,6 @@
 import { pgTable, varchar, timestamp, integer } from "drizzle-orm/pg-core";
 import { objects } from "./objects";
+import { relations } from "drizzle-orm";
 
 export const object_virustotal_ip = pgTable("object_virustotal_ip", {
   id: integer("id")
@@ -12,3 +13,10 @@ export const object_virustotal_ip = pgTable("object_virustotal_ip", {
   reputation: varchar("reputation", { length: 255 }),
   last_report: timestamp("last_report", { withTimezone: true }),
 });
+
+export const virustotal_ipRelations = relations(object_virustotal_ip, ({ one }) => ({
+    object: one(objects, {
+        fields: [object_virustotal_ip.id],
+        references: [objects.id],
+    }),
+}));

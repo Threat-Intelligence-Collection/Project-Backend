@@ -1,9 +1,9 @@
-import { users } from "@src/db/schema/user";
+import { users } from "@src/model/db/schema/user";
 import { eq } from "drizzle-orm";
-import { dbClient } from "@src/db/client";
+import { dbClient } from "@src/model/db/client";
 import bcrypt from "bcrypt";
 
-export class UserModel {
+export class UserService {
   constructor(private db: typeof dbClient) {}
 
   async createUser(
@@ -18,7 +18,8 @@ export class UserModel {
     const existing = await this.db
       .select()
       .from(users)
-      .where(eq(users.email, email));
+      .where(eq(users.email, email))
+      .limit(1);
     if (existing.length > 0) {
       throw new Error(`User with ${email} already exists.`);
     }
@@ -63,7 +64,8 @@ export class UserModel {
     const existing = await this.db
       .select()
       .from(users)
-      .where(eq(users.email, email));
+      .where(eq(users.email, email))
+      .limit(1);
     if (existing.length === 0) {
       throw new Error(`User with ${email} does not exist.`);
     }
@@ -75,7 +77,7 @@ export class UserModel {
   }
 
   async updateUser(
-    id: number,
+    id: string,
     user_name?: string,
     email?: string,
     password?: string,
@@ -84,8 +86,13 @@ export class UserModel {
     if (!id) {
       throw new Error("ID is required");
     }
+    const userId = Number(id);
 
-    const existing = await this.db.select().from(users).where(eq(users.id, id));
+    const existing = await this.db
+      .select()
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
     if (existing.length === 0) {
       throw new Error(`User with ID ${id} does not exist.`);
     }
@@ -94,26 +101,12 @@ export class UserModel {
 
     const updateData: Partial<typeof users.$inferInsert> = {};
 
-    if (!user_name) {
-      updateData.user_name = current.user_name;
-    } else {
-      updateData.user_name = user_name;
-    }
-    if (!email) {
-      updateData.email = current.email;
-    } else {
-      updateData.email = email;
-    }
-    if (!user_role) {
-      updateData.user_role = current.user_role;
-    } else {
-      updateData.user_role = user_role;
-    }
-    if (!password) {
-      updateData.password = current.password;
-    } else {
-      updateData.password = await bcrypt.hash(password, 10);
-    }
+    updateData.user_name = user_name ? user_name : current.user_name;
+    updateData.email = email ? email : current.email;
+    updateData.user_role = user_role ? user_role : current.user_role;
+    updateData.password = password
+      ? await bcrypt.hash(password, 10)
+      : current.password;
 
     if (Object.keys(updateData).length === 0) {
       throw new Error("No fields provided for update.");
@@ -122,7 +115,7 @@ export class UserModel {
     const updatedUser = await this.db
       .update(users)
       .set(updateData)
-      .where(eq(users.id, id))
+      .where(eq(users.id, userId))
       .returning();
 
     return updatedUser;

@@ -1,5 +1,6 @@
 import { pgTable, integer } from "drizzle-orm/pg-core";
 import { objects } from "./objects";
+import { relations } from "drizzle-orm";
 
 export const object_virustotal_domain = pgTable("object_virustotal_domain", {
   id: integer("id")
@@ -10,3 +11,10 @@ export const object_virustotal_domain = pgTable("object_virustotal_domain", {
   undetected_score: integer("undetected_score"),
   harmless_score: integer("harmless_score"),
 });
+
+export const virustotal_domainRelations = relations(object_virustotal_domain, ({ one }) => ({
+    object: one(objects, {
+        fields: [object_virustotal_domain.id],
+        references: [objects.id],
+    }), 
+}));

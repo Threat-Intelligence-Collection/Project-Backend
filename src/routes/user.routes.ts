@@ -9,7 +9,7 @@ import {
   getUserByEmail,
   updateUser,
 } from "@src/controllers/userController/user.controller";
-import { userDTO, updateUserSchema } from "@src/dto/userDTO";
+import { userDTO, updateUserSchema } from "@src/dto/user.dto";
 
 export const appRoutes = new Elysia()
 

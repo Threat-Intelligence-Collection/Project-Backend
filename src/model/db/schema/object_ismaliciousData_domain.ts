@@ -1,5 +1,6 @@
 import { pgTable, text, integer, varchar, boolean } from "drizzle-orm/pg-core";
 import { objects } from "./objects";
+import { relations } from "drizzle-orm";
 
 export const object_ismaliciousData_domain = pgTable(
   "object_ismaliciousData_domain",
@@ -17,3 +18,10 @@ export const object_ismaliciousData_domain = pgTable(
     network: varchar("network", { length: 255 }),
   }
 );
+
+export const ismaliciousData_domainRelations = relations(object_ismaliciousData_domain, ({ one }) => ({
+    object: one(objects, {
+        fields: [object_ismaliciousData_domain.id],
+        references: [objects.id],
+    }),
+}));

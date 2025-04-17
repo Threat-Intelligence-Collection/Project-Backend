@@ -1,5 +1,6 @@
 import { pgTable, varchar, integer } from "drizzle-orm/pg-core";
 import { attributes } from "./attributes";
+import { relations } from "drizzle-orm";
 
 export const locations = pgTable("locations", {
   id: integer("id").generatedAlwaysAsIdentity(),
@@ -15,3 +16,10 @@ export const locations = pgTable("locations", {
   isp: varchar("isp", { length: 255 }),
   asn: varchar("asn", { length: 255 }),
 });
+
+export const locationsRelations = relations(locations, ({ one }) => ({
+    attribute: one(attributes, {
+        fields: [locations.att_value],
+        references: [attributes.value],
+    }),
+}));

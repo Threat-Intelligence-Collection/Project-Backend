@@ -1,5 +1,6 @@
 import { pgTable, varchar, integer } from "drizzle-orm/pg-core";
 import { objects } from "./objects";
+import { relations } from "drizzle-orm";
 
 export const object_dbip_ip = pgTable("object_dbip_ip", {
   id: integer("id")
@@ -9,3 +10,10 @@ export const object_dbip_ip = pgTable("object_dbip_ip", {
   attack_target: varchar("attack_target", { length: 255 }),
   risk_level: varchar("risk_level", { length: 255 }),
 });
+
+export const dbip_ipRelations = relations(object_dbip_ip, ({ one }) => ({
+    object: one(objects, {
+        fields: [object_dbip_ip.id],
+        references: [objects.id],
+    }),
+}));
