@@ -2,6 +2,7 @@ import { users } from "@src/model/db/schema/user";
 import { eq } from "drizzle-orm";
 import { dbClient } from "@src/model/db/client";
 import bcrypt from "bcrypt";
+import { UserRole } from "@src/dto/user.dto";
 
 export class UserService {
   constructor(private db: typeof dbClient) {}
@@ -10,70 +11,61 @@ export class UserService {
     user_name: string,
     email: string,
     password: string,
-    user_role: string
+    user_role: UserRole
   ) {
-    if (!user_name || !email || !password || !user_role) {
-      throw new Error("Missing required fields");
-    }
-    const existing = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
-    if (existing.length > 0) {
-      throw new Error(`User with ${email} already exists.`);
-    }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await this.db
-      .insert(users)
-      .values({
-        user_name,
-        email,
-        password: hashedPassword,
-        user_role,
-      })
-      .returning();
-    return newUser;
+    return await this.db.transaction(async (tx) => {
+      const existing = await tx.query.users.findFirst({
+        where: eq(users.email, email),
+      });
+      if (existing) {
+        throw new Error(`User with ${email} already exists.`);
+      }
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const newUser = await tx
+        .insert(users)
+        .values({
+          user_name,
+          email,
+          password: hashedPassword,
+          user_role,
+        })
+        .returning();
+      const { password: _, ...userWithoutPassword } = newUser[0];
+      return userWithoutPassword;
+    });
   }
 
   async getUserByEmail(email: string) {
-    if (!email) {
-      throw new Error("Email is required");
-    }
-    const user = await this.db
-      .select({
-        id: users.id,
-        user_name: users.user_name,
-        email: users.email,
-        user_role: users.user_role,
-        created_at: users.created_at,
-        updated_at: users.updated_at,
-      })
-      .from(users)
-      .where(eq(users.email, email));
-    if (user.length === 0) {
-      throw new Error(`User with ${email} not found`);
-    }
-    return user[0];
+    return await this.db.transaction(async (tx) => {
+      const user = await tx.query.users.findFirst({
+        where: eq(users.email, email),
+        with: {
+          events: true,
+        },
+      });
+      if (!user) {
+        throw new Error(`User with ${email} not found`);
+      }
+      const { password, ...userWithoutPassword } = user;
+      return userWithoutPassword;
+    });
   }
 
   async deleteUser(email: string) {
-    if (!email) {
-      throw new Error("Email is required");
-    }
-    const existing = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.email, email))
-      .limit(1);
-    if (existing.length === 0) {
-      throw new Error(`User with ${email} does not exist.`);
-    }
-    const deletedUser = await this.db
-      .delete(users)
-      .where(eq(users.email, email))
-      .returning();
-    return deletedUser;
+    return await this.db.transaction(async (tx) => {
+      const existing = await tx.query.users.findFirst({
+        where: eq(users.email, email),
+      });
+      if (!existing) {
+        throw new Error(`User with ${email} does not exist.`);
+      }
+      const deletedUser = await tx
+        .delete(users)
+        .where(eq(users.email, email))
+        .returning();
+      const { password: _, ...userWithoutPassword } = deletedUser[0];
+      return userWithoutPassword;
+    });
   }
 
   async updateUser(
@@ -81,43 +73,37 @@ export class UserService {
     user_name?: string,
     email?: string,
     password?: string,
-    user_role?: string
+    user_role?: UserRole
   ) {
-    if (!id) {
-      throw new Error("ID is required");
-    }
-    const userId = Number(id);
+    return await this.db.transaction(async (tx) => {
+      const userId = Number(id);
+      const existing = await tx.query.users.findFirst({
+        where: eq(users.id, userId),
+      });
+      if (!existing) {
+        throw new Error(`User with ${email} does not exist.`);
+      }
+      const current = existing;
+      const updateData: Partial<typeof users.$inferInsert> = {};
 
-    const existing = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId))
-      .limit(1);
-    if (existing.length === 0) {
-      throw new Error(`User with ID ${id} does not exist.`);
-    }
+      updateData.user_name = user_name ? user_name : current.user_name;
+      updateData.email = email ? email : current.email;
+      updateData.user_role = user_role ? user_role : current.user_role;
+      updateData.password = password
+        ? await bcrypt.hash(password, 10)
+        : current.password;
 
-    const current = existing[0];
+      if (Object.keys(updateData).length === 0) {
+        throw new Error("No fields provided for update.");
+      }
 
-    const updateData: Partial<typeof users.$inferInsert> = {};
+      const updatedUser = await tx
+        .update(users)
+        .set(updateData)
+        .where(eq(users.id, userId))
+        .returning();
 
-    updateData.user_name = user_name ? user_name : current.user_name;
-    updateData.email = email ? email : current.email;
-    updateData.user_role = user_role ? user_role : current.user_role;
-    updateData.password = password
-      ? await bcrypt.hash(password, 10)
-      : current.password;
-
-    if (Object.keys(updateData).length === 0) {
-      throw new Error("No fields provided for update.");
-    }
-
-    const updatedUser = await this.db
-      .update(users)
-      .set(updateData)
-      .where(eq(users.id, userId))
-      .returning();
-
-    return updatedUser;
+      return updatedUser;
+    });
   }
 }

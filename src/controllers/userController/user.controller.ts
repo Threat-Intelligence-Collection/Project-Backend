@@ -1,11 +1,13 @@
 import { dbClient } from "@src/model/db/client";
 import { UserService } from "@src/services/user/user.service";
-import { userDTO, updateUserSchema } from "@src/dto/user.dto";
+import { userDTO, updateUserSchema, emailParamsDTO } from "@src/dto/user.dto";
+import { UserRole } from "@src/dto/user.dto";
 
 const userService = new UserService(dbClient);
 
 type CreateUserDTO = typeof userDTO.static;
 type UpdateUserDTO = typeof updateUserSchema.static;
+type EmailParamsDTO = typeof emailParamsDTO.static;
 
 export async function createUser({ body }: { body: CreateUserDTO }) {
   const { user_name, email, password, user_role } = body;
@@ -14,7 +16,7 @@ export async function createUser({ body }: { body: CreateUserDTO }) {
       user_name,
       email,
       password,
-      user_role
+      user_role as UserRole
     );
     return {
       success: true,
@@ -32,8 +34,8 @@ export async function createUser({ body }: { body: CreateUserDTO }) {
 export async function getUserByEmail({
   params,
 }: {
-  params: { email: string };
-}) {
+  params: EmailParamsDTO }
+) {
   try {
     const user = await userService.getUserByEmail(params.email);
     return {
@@ -48,7 +50,7 @@ export async function getUserByEmail({
   }
 }
 
-export async function deleteUser({ params }: { params: { email: string } }) {
+export async function deleteUser({ params }: { params: EmailParamsDTO }) {
   try {
     const user = await userService.deleteUser(params.email);
     return {
@@ -72,7 +74,7 @@ export async function updateUser({ body }: { body: UpdateUserDTO }) {
       user_name,
       email,
       password,
-      user_role
+      user_role as UserRole
     );
     return {
       success: true,

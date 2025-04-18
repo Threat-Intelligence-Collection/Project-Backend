@@ -19,7 +19,8 @@
     "fp-ts": "^2.16.9",
     "node-fetch": "^3.3.2",
     "pg": "^8.13.1",
-    "postgres": "^3.4.5"
+    "postgres": "^3.4.5",
+    "zod": "^3.24.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

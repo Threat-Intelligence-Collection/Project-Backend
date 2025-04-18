@@ -9,7 +9,7 @@ import {
   getUserByEmail,
   updateUser,
 } from "@src/controllers/userController/user.controller";
-import { userDTO, updateUserSchema } from "@src/dto/user.dto";
+import { userDTO, updateUserSchema, emailParamsDTO } from "@src/dto/user.dto";
 
 export const appRoutes = new Elysia()
 
@@ -37,12 +37,14 @@ export const appRoutes = new Elysia()
         },
       })
       .delete("/delete/:email", deleteUser, {
+        params: emailParamsDTO,
         detail: {
           summary: "Delete a user",
           tags: ["User"],
         },
       })
       .get("/get/:email", getUserByEmail, {
+        params: emailParamsDTO,
         detail: {
           summary: "Get user by email",
           tags: ["User"],
