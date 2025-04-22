@@ -19,6 +19,8 @@ import { AppError } from "@src/services/handler/error_interface";
 import { fetchSearchData } from "@src/services/search/search";
 import { searchAssetResponse } from "../../../types/searchAssetResponse/NDV";
 import { fetchAsset } from "@src/services/searchAsset/searchAsset";
+import { calculateDomainRisk } from "@src/services/Analyze/calculateDomainRisk";
+import { calculateIPRisk } from "@src/services/Analyze/calculateIPRisk";
 
 async function searchIP({
   params,
@@ -64,9 +66,20 @@ async function searchIP({
       "BlockList",
       ""
     );
-
+    const riskScore = calculateIPRisk(
+      {
+        abuseData: Abuseresult._tag === "Right" ? Abuseresult.right : ({} as AbuseIPObject),
+        virusTotalData: Virusresult._tag === "Right" ? Virusresult.right : ({} as VirusTotalIPreport),
+        DBIPData: DBIPresult._tag === "Right" ? DBIPresult.right : ({} as IPInfo),
+        CriminalData: Criminalresult._tag === "Right" ? Criminalresult.right : ({} as CriminalObject),
+        BlockListData: BlockListresult._tag === "Right" ? BlockListresult.right : ({} as BlockList)
+      }
+    );
     return {
       success: true,
+      status: 200,
+      riskScore: riskScore,
+      message: "Domain search completed successfully",
       abuseData:
         Abuseresult._tag === "Left" ? Abuseresult.left : Abuseresult.right,
       virusTotalData:
@@ -142,16 +155,21 @@ async function searchDomain({
     );
 
     // const riskScore = calculateDomainRisk({
-    //   UrlVoidData: UrlVoidresult,
-    //   virusTotalData: Virusresult,
-    //   IsMaliCiousData: IsMaliciousresult,
-    //   CriminalData: CriminalResult,
-    //   NeutrinoData: NeutrinoResult,
+    //   UrlVoidData: UrlVoidresult._tag === "Right" ? UrlVoidresult.right : ({} as URLVoidData),
+    //   virusTotalData: Virusresult._tag === "Right" ? Virusresult.right : ({} as VirusTotalDomain),
+    //   IsMaliCiousData: IsMaliciousresult._tag === "Right" ? IsMaliciousresult.right : ({} as IsMaliciousData),
+    //   CriminalData:
+    //     CriminalResult._tag === "Right"
+    //       ? CriminalResult.right
+    //       : ({} as CriminalDomainResponseType),
+    //   NeutrinoData: NeutrinoResult._tag === "Right" ? NeutrinoResult.right : ({} as NeutrinoData),
     // });
 
     return {
       success: true,
       status: 200,
+      // riskScore: riskScore,
+      message: "Domain search completed successfully",
       CriminalData:
         CriminalResult._tag === "Left"
           ? CriminalResult.left
@@ -170,7 +188,7 @@ async function searchDomain({
           : UrlVoidresult.right,
       virusTotalData:
         Virusresult._tag === "Left" ? Virusresult.left : Virusresult.right,
-    };
+    }
   } catch (error: unknown) {
     if (error instanceof AppError) {
       return handleError(error.statusCode, error.message);
