@@ -154,30 +154,30 @@ async function searchDomain({
       process.env.VIRUS_TOTAL_API_KEY || ""
     );
 
-    // const riskScore = calculateDomainRisk({
-    //   UrlVoidData: UrlVoidresult._tag === "Right" ? UrlVoidresult.right : ({} as URLVoidData),
-    //   virusTotalData: Virusresult._tag === "Right" ? Virusresult.right : ({} as VirusTotalDomain),
-    //   IsMaliCiousData: IsMaliciousresult._tag === "Right" ? IsMaliciousresult.right : ({} as IsMaliciousData),
-    //   CriminalData:
-    //     CriminalResult._tag === "Right"
-    //       ? CriminalResult.right
-    //       : ({} as CriminalDomainResponseType),
-    //   NeutrinoData: NeutrinoResult._tag === "Right" ? NeutrinoResult.right : ({} as NeutrinoData),
-    // });
+    const riskScore = calculateDomainRisk({
+      UrlVoidData: UrlVoidresult._tag === "Right" ? UrlVoidresult.right : ({} as URLVoidData),
+      virusTotalData: Virusresult._tag === "Right" ? Virusresult.right : ({} as VirusTotalDomain),
+      IsMaliCiousData: IsMaliciousresult._tag === "Right" ? IsMaliciousresult.right : ({} as IsMaliciousData),
+      CriminalData:
+        CriminalResult._tag === "Right"
+          ? CriminalResult.right
+          : ({} as CriminalDomainResponseType),
+      NeutrinoData: NeutrinoResult._tag === "Right" ? NeutrinoResult.right : ({} as NeutrinoData),
+    });
 
     return {
       success: true,
       status: 200,
-      // riskScore: riskScore,
+      riskScore: riskScore,
       message: "Domain search completed successfully",
       CriminalData:
         CriminalResult._tag === "Left"
           ? CriminalResult.left
           : CriminalResult.right,
-      IsMaliCiousData:
-        IsMaliciousresult._tag === "Left"
-          ? IsMaliciousresult.left
-          : IsMaliciousresult.right,
+      // IsMaliCiousData:
+      //   IsMaliciousresult._tag === "Left"
+      //     ? IsMaliciousresult.left
+      //     : IsMaliciousresult.right,
       NeutrinoData:
         NeutrinoResult._tag === "Left"
           ? NeutrinoResult.left

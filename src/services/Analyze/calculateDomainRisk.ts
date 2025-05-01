@@ -70,7 +70,7 @@ function calculateCriminalScore(
  * @returns The score based on the detection counts.
  */
 function calculateUrlVoidScore(UrlVoidData: URLVoidData): number {
-  return Number(UrlVoidData.detectionCounts) * 10;
+  return parseFloat(UrlVoidData.detectionCounts) * 10;
 }
 
 /**
@@ -121,14 +121,14 @@ function calculateRawScore(
   criminalScore: number,
   urlVoidScore: number,
   neutrinoScore: number,
-  isMaliCiousScore: number
+  // isMaliCiousScore: number
 ): number {
   return (
     virusTotalScore * 0.5 +
     criminalScore * 0.3 +
     urlVoidScore * 0.2 +
-    neutrinoScore * 0.1 +
-    isMaliCiousScore * 0.5
+    neutrinoScore * 0.1
+    // isMaliCiousScore * 0.5
   );
 }
 
@@ -148,9 +148,9 @@ function calculateDomainRisk(data: {
   const criminalScore: number = calculateCriminalScore(data.CriminalData);
   const urlVoidScore: number = calculateUrlVoidScore(data.UrlVoidData);
   const neutrinoScore: number = calculateNeutrinoScore(data.NeutrinoData);
-  const isMaliCiousScore: number = calculateIsMaliciousScore(
-    data.IsMaliCiousData
-  );
+  // const isMaliCiousScore: number = calculateIsMaliciousScore(
+  //   data.IsMaliCiousData
+  // );
   console.log(
     "VirusTotal Score",
     virusTotalScore,
@@ -160,15 +160,15 @@ function calculateDomainRisk(data: {
     urlVoidScore,
     "Neutrino Score",
     neutrinoScore,
-    "IsMalicious Score",
-    isMaliCiousScore
+    // "IsMalicious Score",
+    // isMaliCiousScore
   );
   const rawScore: number = calculateRawScore(
     virusTotalScore,
     criminalScore,
     urlVoidScore,
     neutrinoScore,
-    isMaliCiousScore
+    // isMaliCiousScore
   );
   const roundScore: number = Math.round(Math.min(rawScore, 10) * 10) / 10;
   const finalScore: number = Math.max(roundScore, 1);
