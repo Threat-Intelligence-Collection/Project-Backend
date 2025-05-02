@@ -1,5 +1,5 @@
 import { dbClient } from "@src/model/db/client";
-import { EventService } from "@src/services/events_tb/event.service";
+import { EventService } from "@src/services/db_service/events_tb/event.service";
 import { eventDTO, eventParamsDTO, updateEventDTO } from "@src/dto/event.dto";
 
 const eventService = new EventService(dbClient);

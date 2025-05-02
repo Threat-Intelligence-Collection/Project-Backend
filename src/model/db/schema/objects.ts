@@ -19,7 +19,7 @@ export const objects = pgTable("objects", {
     .notNull()
     .references(() => events.id, { onDelete: "cascade" }),
   object_name: varchar("object_name", { length: 255 }),
-  descripton: varchar("descripton", { length: 255 }),
+  description: varchar("description", { length: 255 }),
 });
 
 export const objectsRelations = relations(objects, ({ one }) => ({

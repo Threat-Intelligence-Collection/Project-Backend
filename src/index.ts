@@ -4,6 +4,8 @@ import { swagger } from "@elysiajs/swagger";
 import { connectToDatabase } from "@src/model/db/util";
 import { appRoutes } from "@routes/user.routes";
 import { eventRoute } from "./routes/event.route";
+import { objectRoute } from "./routes/object.route";
+import { attributeRoutes } from "./routes/attribute.route";
 
 const app = new Elysia().use(cors());
 app
@@ -18,7 +20,9 @@ app
     })
   )
   .use(appRoutes)
-  .use(eventRoute);
+  .use(eventRoute)
+  .use(objectRoute)
+  .use(attributeRoutes);
 
 async function initializeServer() {
   try {

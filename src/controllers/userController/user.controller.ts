@@ -1,7 +1,6 @@
 import { dbClient } from "@src/model/db/client";
-import { UserService } from "@src/services/user/user.service";
-import { userDTO, updateUserSchema, emailParamsDTO } from "@src/dto/user.dto";
-import { UserRole } from "@src/dto/user.dto";
+import { UserService } from "@src/services/db_service/user/user.service";
+import { userDTO, updateUserSchema, emailParamsDTO, UserRole } from "@src/dto/user.dto";
 
 const userService = new UserService(dbClient);
 
