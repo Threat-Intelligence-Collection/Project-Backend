@@ -4,7 +4,12 @@ import { swagger } from "@elysiajs/swagger";
 import { connectToDatabase } from "@db/util";
 import { appRoutes } from "@routes/user.routes";
 
-const app = new Elysia().use(cors());
+const app = new Elysia().use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app
   .use(
     swagger({

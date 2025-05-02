@@ -151,18 +151,6 @@ function calculateDomainRisk(data: {
   // const isMaliCiousScore: number = calculateIsMaliciousScore(
   //   data.IsMaliCiousData
   // );
-  console.log(
-    "VirusTotal Score",
-    virusTotalScore,
-    "Criminal Score",
-    criminalScore,
-    "UrlVoid Score",
-    urlVoidScore,
-    "Neutrino Score",
-    neutrinoScore,
-    // "IsMalicious Score",
-    // isMaliCiousScore
-  );
   const rawScore: number = calculateRawScore(
     virusTotalScore,
     criminalScore,
