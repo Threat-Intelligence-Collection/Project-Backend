@@ -41,7 +41,7 @@ async function GetgithubOAuthCode(
 
 async function GetAccessToken(code: string): Promise<Either<string, string>> {
   const response = (await axios.post(
-    "https://github.com/login/oauth/access_token",
+    `${process.env.GITHUB_ACCESS_TOKEN_URL}`,
     {
       client_id: process.env.GITHUB_CLIENT_ID,
       client_secret: process.env.GITHUB_CLIENT_SECRET,
@@ -57,7 +57,7 @@ async function GetAccessToken(code: string): Promise<Either<string, string>> {
 }
 
 async function GetUser(access_token: string): Promise<Either<string, githubUser>> {
-  const response = await axios.get("https://api.github.com/user", {
+  const response = await axios.get(`${process.env.GITHUB_USER_INFO_URL}`, {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },
