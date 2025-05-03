@@ -3,7 +3,7 @@ import { t } from "elysia";
 export const tagDTO = t.Object({
   tag_name: t.String({ minLength: 1 }),
   color: t.String({ minLength: 1 }),
-  event_id: t.Number({ minimum: 1 }),
+  // event_id: t.Number({ minimum: 1 }),
 });
 
 export const eventTagDTO = t.Object({
@@ -14,3 +14,10 @@ export const eventTagDTO = t.Object({
 export const eventIDparams = t.Object({
   event_id: t.Number({ minimum: 1 }),
 });
+
+export const updateTagDTO = t.Object({
+  id: t.Number({ minimum: 1 }),
+  tag_name: t.Optional(t.String()),
+  color: t.Optional(t.String()),
+});
+
