@@ -6,6 +6,7 @@ import { appRoutes } from "@routes/user.routes";
 import { eventRoute } from "./routes/event.route";
 import { objectRoute } from "./routes/object.route";
 import { attributeRoutes } from "./routes/attribute.route";
+import { tagRoute } from "./routes/tag.route";
 
 const app = new Elysia().use(cors());
 app
@@ -22,7 +23,8 @@ app
   .use(appRoutes)
   .use(eventRoute)
   .use(objectRoute)
-  .use(attributeRoutes);
+  .use(attributeRoutes)
+  .use(tagRoute);
 
 async function initializeServer() {
   try {
