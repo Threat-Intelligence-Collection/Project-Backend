@@ -16,25 +16,21 @@ interface ApiResponse {
 
 interface searchIPresponse {
   success: boolean;
-  status: number;
-  message?: string;
-  riskScore?: number;
   abuseData: AbuseIPObject | ApiResponse;
   virusTotalData: VirusTotalIPreport | ApiResponse;
   DBIPData: IPInfo | ApiResponse;
   CriminalData: CriminalObject | ApiResponse;
   BlockListData: BlockList | ApiResponse;
+  riskScore?: number;
 }
 
 interface searchDomainResponse {
   success: boolean;
-  status: number;
-  riskScore?: number;
-  message?: string;
   UrlVoidData: URLVoidData | ApiResponse;
   virusTotalData: VirusTotalDomain | ApiResponse;
   IsMaliCiousData: IsMaliciousData | ApiResponse;
   CriminalData: CriminalDomainResponseType | ApiResponse;
+  BlockListData: BlockList | ApiResponse;
   NeutrinoData: NeutrinoData | ApiResponse;
 }
 
