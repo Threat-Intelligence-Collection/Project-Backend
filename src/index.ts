@@ -8,7 +8,12 @@ import { objectRoute } from "./routes/object.route";
 import { attributeRoutes } from "./routes/attribute.route";
 import { tagRoute } from "./routes/tag.route";
 
-const app = new Elysia().use(cors());
+const app = new Elysia().use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app
   .use(
     swagger({

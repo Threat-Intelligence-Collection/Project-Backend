@@ -2,6 +2,7 @@ import { Elysia } from "elysia";
 import {
   searchDomain,
   searchIP,
+  searchAsset
 } from "@src/controllers/searchController/search.controller";
 import {
   createUser,
@@ -10,6 +11,8 @@ import {
   updateUser,
 } from "@src/controllers/userController/user.controller";
 import { userDTO, updateUserSchema, emailParamsDTO } from "@src/dto/user.dto";
+import { GithubOAuthController } from "@src/controllers/loginController/githubLogIn.controller";
+import { GoogleAuthController } from "@src/controllers/loginController/googleLogin.controller";
 
 export const appRoutes = new Elysia()
 
@@ -24,6 +27,18 @@ export const appRoutes = new Elysia()
         detail: {
           tags: ["Search"],
         },
+      }).get("/search/asset/:asset", searchAsset, {
+        detail: {
+          tags: ["Search_Asset"]
+        }
+      }).get("/login/oauth2/code/github", GithubOAuthController, {
+        detail: {
+          tags: ["Github_OAuth"],
+        }
+      }).get("/login/oauth2/code/google", GoogleAuthController, {
+        detail: {
+          tags: ["Google_OAuth"],
+        }
       })
   )
 
@@ -58,3 +73,6 @@ export const appRoutes = new Elysia()
         },
       })
   );
+
+
+
