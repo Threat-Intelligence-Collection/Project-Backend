@@ -1,14 +1,15 @@
 import { Elysia } from "elysia";
 import { cors } from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
-import { connectToDatabase } from "@src/model/db/util";
+import { connectToDatabase } from "@db/util";
 import { appRoutes } from "@routes/user.routes";
-import { eventRoute } from "./routes/event.route";
-import { objectRoute } from "./routes/object.route";
-import { attributeRoutes } from "./routes/attribute.route";
-import { tagRoute } from "./routes/tag.route";
 
-const app = new Elysia().use(cors());
+const app = new Elysia().use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app
   .use(
     swagger({
@@ -20,11 +21,7 @@ app
       },
     })
   )
-  .use(appRoutes)
-  .use(eventRoute)
-  .use(objectRoute)
-  .use(attributeRoutes)
-  .use(tagRoute);
+  .use(appRoutes);
 
 async function initializeServer() {
   try {
