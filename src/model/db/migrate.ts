@@ -6,11 +6,18 @@ import { connectionString } from "./util";
 const dbConn = postgres(connectionString, { max: 1 });
 
 async function main() {
-  await migrate(drizzle(dbConn), {
-    migrationsFolder: "./db/migration",
-    migrationsSchema: "drizzle",
-  });
-  await dbConn.end();
+  try {
+    console.log("🛠️  Starting migrations...");
+    await migrate(drizzle(dbConn), {
+      migrationsFolder: "drizzle",
+    });
+    console.log("✅ Migrations applied successfully.");
+  } catch (error) {
+    console.error("❌ Migration failed:", error);
+  } finally {
+    await dbConn.end();
+    console.log("🔌 Database connection closed.");
+  }
 }
 
 main();

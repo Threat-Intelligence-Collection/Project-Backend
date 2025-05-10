@@ -2,12 +2,12 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import { connectionString } from "./util";
 import { sql } from "drizzle-orm";
-import { users, userRelations } from "./schema/user";
+import { users, userRelations, userTypeEnum } from "./schema/user";
 import {
   asset_attributes,
   asset_attributesRelations,
 } from "./schema/asset_attributes";
-import { attributes, attributesRelations } from "./schema/attributes";
+import { attributes, attributesRelations, attributeTypeEnum } from "./schema/attributes";
 import { cve_data, cve_dataRelations } from "./schema/cve_data";
 import { event_tags, event_tagsRelations } from "./schema/event_tags";
 import { events, eventsRelations } from "./schema/events";
@@ -99,6 +99,8 @@ const dbClient = drizzle(dbConn, {
 
 async function dropAllTables() {
   try {
+    await dbClient.execute(sql`DROP TYPE IF EXISTS ${attributeTypeEnum}`);
+    await dbClient.execute(sql`DROP TYPE IF EXISTS ${userTypeEnum}`);
     await dbClient.execute(sql`DROP TABLE IF EXISTS ${cve_data}`);
     await dbClient.execute(sql`DROP TABLE IF EXISTS ${locations}`);
     await dbClient.execute(
@@ -137,4 +139,3 @@ async function dropAllTables() {
 
 export { dbConn, dbClient, dropAllTables };
 
-// dropAllTables();

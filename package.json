@@ -6,7 +6,9 @@
     "dev": "bun run --watch src/index.ts",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:fresh": "tsx ./src/db/client.ts && drizzle-kit push"
+    "db:migrate": "tsx src/model/db/migrate.ts",
+    "db:reset": "tsx src/model/db/reset.ts",
+    "db:drop_all_tables": "tsx src/model/db/drop_all_tables.ts"
   },
   "dependencies": {
     "@elysiajs/cors": "^1.2.0",
