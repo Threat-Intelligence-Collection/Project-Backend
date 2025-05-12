@@ -24,12 +24,6 @@ export class TagService {
           `Tag with color ${color} and name ${tag_name} already exists.`
         );
       }
-      // const existingEvent = await tx.query.events.findFirst({
-      //   where: eq(events.id, event_id),
-      // });
-      // if (!existingEvent) {
-      //   throw new Error(`Event with ID ${event_id} does not exist.`);
-      // }
 
       const newTag = await tx
         .insert(tags)
@@ -38,11 +32,6 @@ export class TagService {
           color,
         })
         .returning();
-
-      // const newEventTag = await tx.insert(event_tags).values({
-      //   tag_id: newTag[0].id,
-      //   event_id,
-      // });
       return newTag;
     });
   }

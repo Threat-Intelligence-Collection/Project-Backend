@@ -36,24 +36,28 @@ export class AttributeService {
   }
 
   async getAttributeByValue(value: string) {
-    const attribute = await this.db.query.attributes.findFirst({
-      where: eq(attributes.value, value),
+    return await this.db.transaction(async (tx) => {
+      const attribute = await tx.query.attributes.findFirst({
+        where: eq(attributes.value, value),
+      });
+      if (!attribute) {
+        throw new Error(`Attribute with value ${value} does not exist.`);
+      }
+      return attribute;
     });
-    if (!attribute) {
-      throw new Error(`Attribute with value ${value} does not exist.`);
-    }
-    return attribute;
   }
 
   async deleteAttributeByValue(value: string) {
-    const attribute = await this.db.query.attributes.findFirst({
-      where: eq(attributes.value, value),
+    return await this.db.transaction(async (tx) => {
+      const attribute = await tx.query.attributes.findFirst({
+        where: eq(attributes.value, value),
+      });
+      if (!attribute) {
+        throw new Error(`Attribute with value ${value} does not exist.`);
+      }
+      await tx.delete(attributes).where(eq(attributes.value, value));
+      return { message: `Attribute with value ${value} deleted successfully` };
     });
-    if (!attribute) {
-      throw new Error(`Attribute with value ${value} does not exist.`);
-    }
-    await this.db.delete(attributes).where(eq(attributes.value, value));
-    return { message: `Attribute with value ${value} deleted successfully` };
   }
 
   async updateAttribute(
