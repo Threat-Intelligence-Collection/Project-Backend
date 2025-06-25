@@ -14,7 +14,7 @@ export const appRoutes = new Elysia()
       tags: ["Search_Domain"],
     },
   })
-  .get("/search/asset/:asset", searchAsset, {
+  .get("/search/asset/", searchAsset, {
     detail: {
       tags: ["Search_Asset"]
     }

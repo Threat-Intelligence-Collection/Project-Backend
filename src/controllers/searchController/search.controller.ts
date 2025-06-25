@@ -18,7 +18,7 @@ import { handleError } from "@src/services/handler/error_handling";
 import { AppError } from "@src/services/handler/error_interface";
 import { fetchSearchData } from "@src/services/search/search";
 import { searchAssetResponse } from "../../../types/searchAssetResponse/NDV";
-import { fetchAsset } from "@src/services/searchAsset/searchAsset";
+import { constructAsset, fetchAsset } from "@src/services/searchAsset/searchAsset";
 import { calculateDomainRisk } from "@src/services/Analyze/calculateDomainRisk";
 import { calculateIPRisk } from "@src/services/Analyze/calculateIPRisk";
 
@@ -66,15 +66,25 @@ async function searchIP({
       "BlockList",
       ""
     );
-    const riskScore = calculateIPRisk(
-      {
-        abuseData: Abuseresult._tag === "Right" ? Abuseresult.right : ({} as AbuseIPObject),
-        virusTotalData: Virusresult._tag === "Right" ? Virusresult.right : ({} as VirusTotalIPreport),
-        DBIPData: DBIPresult._tag === "Right" ? DBIPresult.right : ({} as IPInfo),
-        CriminalData: Criminalresult._tag === "Right" ? Criminalresult.right : ({} as CriminalObject),
-        BlockListData: BlockListresult._tag === "Right" ? BlockListresult.right : ({} as BlockList)
-      }
-    );
+    const riskScore = calculateIPRisk({
+      abuseData:
+        Abuseresult._tag === "Right"
+          ? Abuseresult.right
+          : ({} as AbuseIPObject),
+      virusTotalData:
+        Virusresult._tag === "Right"
+          ? Virusresult.right
+          : ({} as VirusTotalIPreport),
+      DBIPData: DBIPresult._tag === "Right" ? DBIPresult.right : ({} as IPInfo),
+      CriminalData:
+        Criminalresult._tag === "Right"
+          ? Criminalresult.right
+          : ({} as CriminalObject),
+      BlockListData:
+        BlockListresult._tag === "Right"
+          ? BlockListresult.right
+          : ({} as BlockList),
+    });
     return {
       success: true,
       status: 200,
@@ -155,14 +165,26 @@ async function searchDomain({
     );
 
     const riskScore = calculateDomainRisk({
-      UrlVoidData: UrlVoidresult._tag === "Right" ? UrlVoidresult.right : ({} as URLVoidData),
-      virusTotalData: Virusresult._tag === "Right" ? Virusresult.right : ({} as VirusTotalDomain),
-      IsMaliCiousData: IsMaliciousresult._tag === "Right" ? IsMaliciousresult.right : ({} as IsMaliciousData),
+      UrlVoidData:
+        UrlVoidresult._tag === "Right"
+          ? UrlVoidresult.right
+          : ({} as URLVoidData),
+      virusTotalData:
+        Virusresult._tag === "Right"
+          ? Virusresult.right
+          : ({} as VirusTotalDomain),
+      IsMaliCiousData:
+        IsMaliciousresult._tag === "Right"
+          ? IsMaliciousresult.right
+          : ({} as IsMaliciousData),
       CriminalData:
         CriminalResult._tag === "Right"
           ? CriminalResult.right
           : ({} as CriminalDomainResponseType),
-      NeutrinoData: NeutrinoResult._tag === "Right" ? NeutrinoResult.right : ({} as NeutrinoData),
+      NeutrinoData:
+        NeutrinoResult._tag === "Right"
+          ? NeutrinoResult.right
+          : ({} as NeutrinoData),
     });
 
     return {
@@ -188,7 +210,7 @@ async function searchDomain({
           : UrlVoidresult.right,
       virusTotalData:
         Virusresult._tag === "Left" ? Virusresult.left : Virusresult.right,
-    }
+    };
   } catch (error: unknown) {
     if (error instanceof AppError) {
       return handleError(error.statusCode, error.message);
@@ -203,16 +225,38 @@ async function searchDomain({
 }
 
 async function searchAsset({
-  params,
+  query,
 }: {
-  params: { asset: string };
+  query: {
+    part: string;
+    vendor: string;
+    product: string;
+    version: string;
+    update: string;
+    edition: string;
+    language: string;
+    sw_edition: string;
+    target_sw: string;
+    target_hw: string;
+    other: string;
+  };
 }): Promise<ApiResponse | searchAssetResponse> {
   try {
-    if (!params.asset) {
-      throw new AppError(404, "Asset name must be provided!");
+    if (!query) {
+      throw new AppError(404, "Asset data must be provided!");
     }
-    const assetResult = await fetchAsset(params.asset);
-    return assetResult._tag === "Left" ? assetResult.left : assetResult.right;
+
+    const asset = await constructAsset({ params: query });
+    if (asset._tag === "Left") {
+      return asset.left;
+    }else {
+      const assetData = await fetchAsset(asset.right);
+      if (assetData._tag === "Left") {
+        return assetData.left;
+      } else {
+        return assetData.right;
+      }
+    }
   } catch (error: unknown) {
     if (error instanceof AppError) {
       return handleError(error.statusCode, error.message);
