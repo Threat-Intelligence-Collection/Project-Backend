@@ -16,7 +16,7 @@ interface cve_data {
   cveTags: string[];
   descriptions: description[];
   metrics: {
-    cvssMetricV31?: cvssMetricV31[];
+    cvssMetricV30?: cvssMetricV30[];
     cvssMetricV2?: cvssMetricV2[];
   };
   weaknesses: weakness[];
@@ -29,7 +29,7 @@ interface description {
   value: string;
 }
 
-interface cvssMetricV31 {
+interface cvssMetricV30 {
   source: string;
   type: string;
   cvssData: {
